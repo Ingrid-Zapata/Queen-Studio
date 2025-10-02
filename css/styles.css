@@ -1,0 +1,226 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: rgba(162, 140, 87, 0.6); /* blanco */
+  color:rgba(179, 154, 96, 0.6);
+  line-height: 1.6;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  /* BACKGROUND con brillo fijo en diagonal */
+  background: linear-gradient(
+    135deg,
+    rgba(220, 182, 93, 0.9),
+    rgba(171, 142, 74, 0.9),
+    rgba(121, 104, 66, 0.7)
+  );
+
+  /* EFECTO LUMINOSO EXTERIOR */
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.8);
+
+  border-bottom: 2px solid rgba(179, 154, 96, 0.6);
+}
+
+
+
+.logo img {
+  background-color: #061a0f;
+  height: 80px;
+  padding-inline: 0px;
+  border-radius: 1000px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav a:hover, nav a.active {
+  color: #e2d5c3;
+  border-bottom: 2px solid rgb(252, 223, 62);
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 120px 20px;
+  background: linear-gradient(rgba(41, 40, 40, 0.699), rgba(41, 70, 50, 0.79)),
+              url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=1500&q=80') no-repeat center/cover;
+  color: #333;
+}
+
+.hero-logo {
+  max-width: 280px;
+  margin: 20px auto;
+  display: block;
+  background-color: #061a0f8c;
+  border-radius: 1000px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  color: rgb(5, 30, 5);
+  margin-bottom: 20px;
+  font-family: 'Great Vibes', cursive; /* para un look manuscrito elegante */
+  text-shadow: 0 0 4px rgba(181, 158, 105, 0.7);
+}
+
+
+.btn {
+  background: #061a0f;
+  color:  #e2d5c3;
+  padding: 12px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: rgb(167, 156, 90);
+  color: #e2d5c3;
+}
+
+/* ABOUT */
+.about {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.about h2 {
+  color: rgb(167, 156, 90);
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.about p {
+  max-width: 700px;
+  margin: 0 auto 30px auto;
+  font-size: 1.1rem;
+  color: #6c655c;
+}
+
+.about-img {
+  max-width: 90%;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* SERVICIOS PAGE */
+.servicios-page {
+  text-align: center;
+  padding: 60px 20px;
+  background: #e2d5c3;
+}
+
+.servicios-page h2 {
+  font-size: 2.2rem;
+  color: rgb(252, 223, 62);
+  margin-bottom: 40px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: #c5a97f;
+  border: 2px solid rgb(252, 223, 62);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card h3 {
+  color: #061a0f;
+  margin: 15px 0 10px 0;
+}
+
+.card p {
+  color: #555;
+  padding: 0 15px;
+}
+
+.card span {
+  display: block;
+  margin: 15px 0;
+  font-weight: bold;
+  color: rgb(252, 223, 62);
+}
+
+/* CONTACTO PAGE */
+.contacto-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.contacto-page h2 {
+  color: rgb(252, 223, 62);
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.whatsapp {
+  background: #0a522c;
+  color: #9d825d;
+}
+
+.email {
+  background: rgb(252, 223, 62);
+  color: #9d825d;
+}
+
+.whatsapp:hover, .email:hover {
+  opacity: 0.9;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #d8c3a7;
+  border-top: 2px solid rgb(167, 156, 90);
+  color: #333;
+}
