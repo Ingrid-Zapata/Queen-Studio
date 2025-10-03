@@ -19,15 +19,16 @@ header {
   align-items: center;
   padding: 8px 40px;
   position: sticky;
+  
   top: 0;
   z-index: 100;
 
   /* BACKGROUND con brillo fijo en diagonal */
   background: linear-gradient(
     135deg,
-    rgba(220, 182, 93, 0.9),
-    rgba(171, 142, 74, 0.9),
-    rgba(121, 104, 66, 0.7)
+    rgba(244, 206, 116, 0.9),
+    rgba(246, 217, 150, 0.84),
+    rgba(255, 193, 60, 0.662)
   );
 
   /* EFECTO LUMINOSO EXTERIOR */
@@ -39,11 +40,17 @@ header {
 
 
 .logo img {
-  background-color: #061a0f;
+  background: radial-gradient(circle, 
+              rgba(0, 0, 0, 0.947) 15px,   /* centro iluminado dorado */
+              #052e17 70%);                 /* se difumina hacia tu color base */
   height: 80px;
   padding-inline: 0px;
   border-radius: 1000px;
+
+  /* Opcional: resaltar más con un brillo alrededor */
+  box-shadow: 0 0 15px rgba(255, 223, 150, 0.6);
 }
+
 
 nav ul {
   list-style: none;
@@ -76,7 +83,9 @@ nav a:hover, nav a.active {
   max-width: 280px;
   margin: 20px auto;
   display: block;
-  background-color: #061a0f8c;
+  background: radial-gradient(circle, 
+              rgba(0, 0, 0, 0.377) 15px,   /* centro iluminado dorado */
+              #032211cb 70%);   
   border-radius: 1000px;
 }
 
@@ -113,6 +122,7 @@ nav a:hover, nav a.active {
   color: rgb(167, 156, 90);
   margin-bottom: 20px;
   font-size: 2rem;
+  font-family: 'Great Vibes', cursive;
 }
 
 .about p {
@@ -120,6 +130,7 @@ nav a:hover, nav a.active {
   margin: 0 auto 30px auto;
   font-size: 1.1rem;
   color: #6c655c;
+  font-family: 'Montserrat', cursive;
 }
 
 .about-img {
@@ -137,7 +148,7 @@ nav a:hover, nav a.active {
 
 .servicios-page h2 {
   font-size: 2.2rem;
-  color: rgb(252, 223, 62);
+  color: rgb(167, 156, 90);
   margin-bottom: 40px;
 }
 
@@ -149,7 +160,7 @@ nav a:hover, nav a.active {
 
 .card {
   background: #c5a97f;
-  border: 2px solid rgb(252, 223, 62);
+  border: 2px solid rgb(167, 156, 90);
   border-radius: 15px;
   overflow: hidden;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -180,7 +191,7 @@ nav a:hover, nav a.active {
   display: block;
   margin: 15px 0;
   font-weight: bold;
-  color: rgb(252, 223, 62);
+  color: rgb(167, 156, 90);
 }
 
 /* CONTACTO PAGE */
@@ -190,7 +201,7 @@ nav a:hover, nav a.active {
 }
 
 .contacto-page h2 {
-  color: rgb(252, 223, 62);
+  color: rgb(167, 156, 90);
   margin-bottom: 20px;
   font-size: 2rem;
 }
@@ -208,7 +219,7 @@ nav a:hover, nav a.active {
 }
 
 .email {
-  background: rgb(252, 223, 62);
+  background: rgb(167, 156, 90);
   color: #9d825d;
 }
 
@@ -220,7 +231,17 @@ nav a:hover, nav a.active {
 footer {
   text-align: center;
   padding: 20px;
-  background: #d8c3a7;
-  border-top: 2px solid rgb(167, 156, 90);
+   /* BACKGROUND con brillo fijo en diagonal */
+  background: linear-gradient(
+    135deg,
+    rgba(244, 206, 116, 0.9),
+    rgba(246, 217, 150, 0.84),
+    rgba(255, 193, 60, 0.662)
+  );
+
+  /* EFECTO LUMINOSO EXTERIOR */
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.8);
+
+  
   color: #333;
 }
