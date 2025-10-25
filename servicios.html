@@ -5,57 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Queen Studio - Servicios</title>
   <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/script.js"></script>
 </head>
 <body>
 
   <!-- HEADER -->
   <header>
     <div class="logo">
-      <img src="Logo/logo.png" alt="Queen Studio Logo">
+      <a href="index.html">
+        <img src="Logo/logo.png" alt="Queen Studio Logo">
+      </a>
     </div>
-    <nav>
+
+    <!-- Botón menú hamburguesa -->
+    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+
+    <!-- Menú -->
+    <nav id="menu">
       <ul>
         <li><a href="index.html">Inicio</a></li>
         <li><a href="servicios.html" class="active">Servicios</a></li>
-        <li><a href="contacto.html">Contacto</a></li>
       </ul>
     </nav>
   </header>
 
   <!-- SERVICIOS -->
   <section class="servicios-page">
-    <h2>Servicios & Precios</h2>
+    <h2>Servicios</h2>
     <div class="cards">
+      <!-- Servicio 1 -->
       <div class="card">
-        <img src="https://tse1.explicit.bing.net/th/id/OIP.ecB5emskBs8f-obnft4HDgHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Corte de cabello">
+        <div class="slider">
+          <img src="https://tse1.explicit.bing.net/th/id/OIP.ecB5emskBs8f-obnft4HDgHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" class="slide active">
+          <img src="https://tse4.mm.bing.net/th/id/OIP.dZaStbT45My77g6vDK_Q7gHaE8?rs=1&pid=ImgDetMain" class="slide">
+          <img src="https://tse1.mm.bing.net/th/id/OIP.GiRuR_sYdyqVbfoRa_U00AHaE7?rs=1&pid=ImgDetMain" class="slide">
+        </div>
         <h3>Corte de Cabello</h3>
-        <p>Estilo moderno y personalizado.</p>
-        <span>$250 MXN</span>
+        <button class="ver-mas">Ver más</button>
+        <div class="info">
+          <p>Transforma tu look con cortes modernos y personalizados según tu tipo de rostro y estilo.</p>
+          <a href="https://wa.me/528446002354?text=Hola%20quiero%20cotizar%20un%20corte%20de%20cabello" target="_blank" class="btn-cotizar">Cotizar 💬</a>
+        </div>
       </div>
+
+      <!-- Servicio 2 -->
       <div class="card">
-        <img src="https://tse3.mm.bing.net/th/id/OIP.i1VJtMS1tLM2YdGWfCGRiQHaE7?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Manicure & Pedicure">
+        <div class="slider">
+          <img src="https://tse3.mm.bing.net/th/id/OIP.i1VJtMS1tLM2YdGWfCGRiQHaE7?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" class="slide active">
+          <img src="https://tse1.mm.bing.net/th/id/OIP.GVpj9u6KLaPq9_8p2PobTgHaE8?rs=1&pid=ImgDetMain" class="slide">
+          <img src="https://tse4.mm.bing.net/th/id/OIP.-RVb6UtbhnB5aEhgpyyD4gHaE8?rs=1&pid=ImgDetMain" class="slide">
+        </div>
         <h3>Manicure & Pedicure</h3>
-        <p>Relajación y belleza en tus manos y pies.</p>
-        <span>$400 MXN</span>
+        <button class="ver-mas">Ver más</button>
+        <div class="info">
+          <p>Disfruta de una experiencia de belleza y relajación con nuestros servicios profesionales de uñas.</p>
+          <a href="https://wa.me/528446002354?text=Hola%20quiero%20cotizar%20manicure%20y%20pedicure" target="_blank" class="btn-cotizar">Cotizar 💬</a>
+        </div>
       </div>
+
+      <!-- Servicio 1 -->
       <div class="card">
-        <img src="https://tse1.explicit.bing.net/th/id/OIP.46F02gSYJIDmi1yaqhQ6bQHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Maquillaje">
-        <h3>Maquillaje Profesional</h3>
-        <p>Para tus eventos más importantes.</p>
-        <span>$600 MXN</span>
+        <div class="slider">
+          <img src="https://tse1.explicit.bing.net/th/id/OIP.ecB5emskBs8f-obnft4HDgHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" class="slide active">
+          <img src="https://tse4.mm.bing.net/th/id/OIP.dZaStbT45My77g6vDK_Q7gHaE8?rs=1&pid=ImgDetMain" class="slide">
+          <img src="https://tse1.mm.bing.net/th/id/OIP.GiRuR_sYdyqVbfoRa_U00AHaE7?rs=1&pid=ImgDetMain" class="slide">
+        </div>
+        <h3>Corte de Cabello</h3>
+        <button class="ver-mas">Ver más</button>
+        <div class="info">
+          <p>Transforma tu look con cortes modernos y personalizados según tu tipo de rostro y estilo.</p>
+          <a href="https://wa.me/528446002354?text=Hola%20quiero%20cotizar%20un%20corte%20de%20cabello" target="_blank" class="btn-cotizar">Cotizar 💬</a>
+        </div>
       </div>
+
+      <!-- Servicio 2 -->
       <div class="card">
-        <img src="https://tse2.mm.bing.net/th/id/OIP.vcSOvqJvIPBdyR-YynGpXwHaLG?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Peinado">
-        <h3>Peinado Elegante</h3>
-        <p>Perfecto para ocasiones especiales.</p>
-        <span>$350 MXN</span>
+        <div class="slider">
+          <img src="https://tse3.mm.bing.net/th/id/OIP.i1VJtMS1tLM2YdGWfCGRiQHaE7?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" class="slide active">
+          <img src="https://tse1.mm.bing.net/th/id/OIP.GVpj9u6KLaPq9_8p2PobTgHaE8?rs=1&pid=ImgDetMain" class="slide">
+          <img src="https://tse4.mm.bing.net/th/id/OIP.-RVb6UtbhnB5aEhgpyyD4gHaE8?rs=1&pid=ImgDetMain" class="slide">
+        </div>
+        <h3>Manicure & Pedicure</h3>
+        <button class="ver-mas">Ver más</button>
+        <div class="info">
+          <p>Disfruta de una experiencia de belleza y relajación con nuestros servicios profesionales de uñas.</p>
+          <a href="https://wa.me/528446002354?text=Hola%20quiero%20cotizar%20manicure%20y%20pedicure" target="_blank" class="btn-cotizar">Cotizar 💬</a>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer>
     <p>© 2025 Queen Studio - Todos los derechos reservados</p>
   </footer>
+
+  <!-- BOTÓN FLOTANTE -->
+  <div class="whatsapp-float" id="whatsapp-float">💬</div>
+  <div class="whatsapp-popup" id="whatsapp-popup">
+    <p>Contáctanos</p>
+    <a href="https://wa.me/528446002354" target="_blank" class="btn whatsapp">WhatsApp</a>
+  </div>
 
 </body>
 </html>
