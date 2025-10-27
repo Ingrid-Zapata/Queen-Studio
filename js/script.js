@@ -31,12 +31,14 @@ document.querySelectorAll('.slider').forEach(slider => {
 // =======================
 // BOTÓN "VER MÁS"
 // =======================
-document.querySelectorAll('.ver-mas').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const info = btn.nextElementSibling;
-    info.style.display = info.style.display === 'block' ? 'none' : 'block';
+document.querySelectorAll(".ver-mas").forEach(btn => {
+  btn.addEventListener("click", function() {
+    const card = this.closest(".card");
+    card.classList.toggle("active");
+    this.textContent = card.classList.contains("active") ? "Ver menos" : "Ver más";
   });
 });
+
 
 // =======================
 // BURBUJA WHATSAPP
