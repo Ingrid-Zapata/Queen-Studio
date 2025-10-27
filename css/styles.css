@@ -23,9 +23,9 @@ header {
   z-index: 100;
   background: linear-gradient(
     135deg,
-    rgba(244, 206, 116, 0.9),
-    rgba(246, 217, 150, 0.84),
-    rgba(255, 193, 60, 0.662)
+    rgba(171, 151, 104, 0.85),
+    rgba(251, 235, 197, 0.8),
+    rgba(171, 151, 104, 0.85)
   );
   box-shadow: 0 0 25px rgba(255, 223, 150, 0.8);
   border-bottom: 2px solid rgba(179, 154, 96, 0.6);
@@ -79,11 +79,11 @@ nav a:hover, nav a.active {
   color: #000;
   margin-bottom: 20px;
   font-family: 'Great Vibes', cursive;
-  text-shadow: 0 0 4px rgb(86, 68, 19);
+  text-shadow: 0 0 4px rgba(171, 151, 104, 0.85);
 }
 
 .btn {
-  background: #d1b75b;
+  background: rgba(235, 212, 155, 0.532);
   color: #000000;
   padding: 12px 30px;
   border-radius: 30px;
@@ -92,13 +92,13 @@ nav a:hover, nav a.active {
 }
 
 .btn:hover {
-  background: rgb(167, 156, 90);
+  background: rgb(169, 150, 97);
   color: #e2d5c3;
 }
 
 /* ===================== SOBRE NOSOTROS ===================== */
 .about {
-  background: rgba(246, 217, 150, 0.3);
+  background: rgba(235, 212, 155, 0.377);
   padding: 60px 10%;
 }
 
@@ -145,10 +145,11 @@ nav a:hover, nav a.active {
 .servicios-page {
   text-align: center;
   padding: 60px 20px;
-  background: #e2d5c3;
+  background: rgba(235, 212, 155, 0.377);
 }
 
 .servicios-page h2 {
+  font-family: 'Great Vibes', cursive;
   font-size: 2.2rem;
   color: rgb(167, 156, 90);
   margin-bottom: 40px;
@@ -161,7 +162,7 @@ nav a:hover, nav a.active {
 }
 
 .card {
-  background: #c5a97f;
+  background: #303e30c5;
   border: 2px solid rgb(167, 156, 90);
   border-radius: 15px;
   overflow: hidden;
@@ -201,7 +202,7 @@ nav a:hover, nav a.active {
 
 /* ==== Texto y botones ==== */ 
 .ver-mas {
-  background: #f4d282;
+  background: #ac9d7a;
   border: none;
   padding: 8px 15px;
   border-radius: 10px;
@@ -211,7 +212,7 @@ nav a:hover, nav a.active {
 }
 
 .ver-mas:hover {
-  background: #c5a97f;
+  background: #9e8a6d;
   color: #fff;
 }
 
@@ -219,7 +220,7 @@ nav a:hover, nav a.active {
 .info {
   max-height: 0;
   overflow: hidden;
-  background: #f8f4ec;
+  background: #9b9b65;
   border-top: 2px solid rgb(167, 156, 90);
   transition: max-height 0.6s ease, padding 0.3s ease;
 }
@@ -250,6 +251,7 @@ nav a:hover, nav a.active {
   font-size: 1rem;
   line-height: 1.5;
   text-align: justify;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* Botón de cotizar */
@@ -281,9 +283,9 @@ footer {
   padding: 20px;
   background: linear-gradient(
     135deg,
-    rgba(244, 206, 116, 0.9),
-    rgba(246, 217, 150, 0.84),
-    rgba(255, 193, 60, 0.662)
+    rgba(171, 151, 104, 0.85),
+    rgba(251, 235, 197, 0.8),
+    rgba(171, 151, 104, 0.85)
   );
   box-shadow: 0 0 25px rgba(255, 223, 150, 0.8);
   color: #333;
@@ -406,7 +408,7 @@ footer {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #d19200;
+  background: rgba(171, 151, 104, 0.941);
   color: white;
   font-size: 24px;
   padding: 15px;
@@ -418,68 +420,66 @@ footer {
   animation: bounce 2s infinite; /* 👈 Animación activada */
 }
 
-/* ================ CONTACTO (dos columnas, más elegante)=================== */
+/* ================ CONTACTO (centrado, apilado y compacto)=================== */
 .contacto-info {
   background: linear-gradient(
     135deg,
-    rgba(255, 233, 182, 0.9),
-    rgba(251, 235, 197, 0.84),
-    rgba(255, 224, 157, 0.662)
+    rgba(171, 151, 104, 0.85),
+    rgba(251, 235, 197, 0.8),
+    rgba(171, 151, 104, 0.85)
   );
-  padding: 20px 10%;
+  padding: 25px 8%;
   text-align: center;
   color: #333;
   font-family: 'Raleway', sans-serif;
-
-  box-shadow: 0 0 25px rgba(255, 223, 150, 0.8);
-  color: #333;
+  box-shadow: 0 0 15px rgba(255, 223, 150, 0.6);
 }
 
 .contacto-info h2 {
-  font-family: 'Great Vibes', sans-serif;
-  font-size: 2rem;
-  margin-bottom: 40px;
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
   color: #b99654;
 }
 
+/* Contenedor centrado en columna */
 .contacto-grid {
   display: flex;
-  align-content: space-between;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   gap: 10px;
 }
 
-.contacto-left, .contacto-right {
+/* Listas apiladas */
+.contacto-left,
+.contacto-right {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex: 1;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
-.contacto-left {
-  text-align: left;
-}
-
-.contacto-right {
-  text-align: left;
-}
-
+/* Líneas más compactas */
 .contacto-info li {
-  margin-bottom: 12px;
-  font-size: 1.1em;
+  margin-bottom: 8px;
+  font-size: 0.95em;
+  line-height: 1.4;
 }
 
+/* Enlaces elegantes */
 .contacto-info a {
   color: #7b5b1f;
   text-decoration: none;
   transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .contacto-info a:hover {
   text-decoration: underline;
   color: #b45309;
 }
-
 
 /* ===================== RESPONSIVE GENERAL ===================== */
 @media (max-width: 768px) {
