@@ -156,7 +156,7 @@ nav a:hover, nav a.active {
 /* ===================== SERVICIOS ===================== */
 .servicios-page {
   text-align: center;
-  padding: 60px 20px;
+  padding: 20px 20px;
   background: rgba(235, 212, 155, 0.377);
 }
 
@@ -164,7 +164,7 @@ nav a:hover, nav a.active {
   font-family: 'Great Vibes', cursive;
   font-size: 2.2rem;
   color: rgb(159, 151, 102);
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .servicios-page h3 {
