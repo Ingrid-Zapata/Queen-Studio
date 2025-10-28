@@ -76,10 +76,10 @@ nav a:hover, nav a.active {
 
 .hero h1 {
   font-size: 3rem;
-  color: #000;
+  color: rgba(232, 207, 149, 0.85);
   margin-bottom: 20px;
   font-family: 'Great Vibes', cursive;
-  text-shadow: 0 0 4px rgba(171, 151, 104, 0.85);
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.85);
 }
 
 .btn {
@@ -285,7 +285,7 @@ nav a:hover, nav a.active {
   margin-top: 10px;
 }
 .btn-cotizar:hover {
-  background: #128c7e;
+  background: #314d31;
 }
 
 
@@ -326,7 +326,7 @@ footer {
     right: -250px;
     width: 250px;
     height: 100vh;
-    background-color: #fff;
+    background-color: rgba(171, 151, 104, 0.53);
     box-shadow: -2px 0 8px rgba(0,0,0,0.2);
     transition: right 0.3s ease;
     display: flex;
