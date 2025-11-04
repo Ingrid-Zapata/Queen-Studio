@@ -52,36 +52,39 @@ console.log("Queen Studio Website Loaded ✅");
 // =========================
 // CARRUSEL AUTOMÁTICO DE UÑAS
 // =========================
+function crearCarrusel(idSlider, carpeta, total) {
+  const slider = document.getElementById(idSlider);
+  if (!slider) return;
 
-// Seleccionamos el contenedor del slider
-const sliderContainer = document.getElementById('slider-unas');
+  // Crear imágenes dinámicamente
+  for (let i = 1; i <= total; i++) {
+    const img = document.createElement('img');
+    img.src = `${carpeta}${i}.jpg`;
+    img.classList.add('slide');
+    img.alt = `Imagen ${i}`;
+    img.onerror = () => img.remove(); // elimina si no existe
+    slider.appendChild(img);
+  }
 
-// Ruta de las imágenes
-const folder = 'imagenes/Uñas/';
-const totalImages = 15; // total de imágenes que tengas
+  // Iniciar el carrusel cuando se carguen las imágenes
+  window.addEventListener('load', () => {
+    const slides = slider.querySelectorAll('.slide');
+    if (slides.length === 0) return;
+    let current = 0;
 
-// Crear imágenes dinámicamente
-for (let i = 1; i <= totalImages; i++) {
-  const img = document.createElement('img');
-  img.src = `${folder}${i}.jpg`;
-  img.classList.add('slide');
-  img.alt = `Diseño de uñas ${i}`;
-  img.onerror = () => img.remove(); // elimina si no existe
-  sliderContainer.appendChild(img);
+    slides[0].classList.add('active');
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 3000);
+  });
 }
 
-// Una vez que las imágenes estén listas, activamos el carrusel
-window.addEventListener('load', () => {
-  const slides = document.querySelectorAll('#slider-unas .slide');
-  let current = 0;
-
-  // Activamos la primera imagen
-  if (slides.length > 0) slides[0].classList.add('active');
-
-  // Cambiamos cada 3 segundos
-  setInterval(() => {
-    slides[current].classList.remove('active');
-    current = (current + 1) % slides.length;
-    slides[current].classList.add('active');
-  }, 3000);
-});
+// Crear los dos carruseles
+crearCarrusel('slider-unas', 'imagenes/1. Uñas/', 38);
+crearCarrusel('slider-pestanas', 'imagenes/6. Pestañas Cejas/', 27);
+crearCarrusel('slider-disenocolor', 'imagenes/3. Mechas/', 27);
+crearCarrusel('slider-alisado', 'imagenes/2. Alaciados/', 32);
+crearCarrusel('slider-permanente', 'imagenes/4. Permanentes/', 6);
+crearCarrusel('slider-maquillaje', 'imagenes/5. maquillaje y peinado/', 19);

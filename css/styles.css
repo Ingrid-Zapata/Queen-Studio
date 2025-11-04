@@ -60,10 +60,11 @@ nav a:hover, nav a.active {
 .hero {
   text-align: center;
   padding: 120px 20px;
-  background: linear-gradient(rgba(41,40,40,0.699), rgba(26,45,30,0.79)),
-    url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=1500&q=80') no-repeat center/cover;
-  color: #333;
+  background: linear-gradient(rgba(196, 179, 148, 0.714), rgba(57, 54, 26, 0)),
+              url('../Logo/portada.jpg') no-repeat center/cover;
+  color: #fff;
 }
+
 
 .hero-logo {
   max-width: 280px;
@@ -110,9 +111,37 @@ nav a:hover, nav a.active {
 
 /* ===================== SOBRE NOSOTROS ===================== */
 .about {
-  background: rgba(235, 212, 155, 0.377);
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgb(107, 93, 61) 0%,
+    rgb(213, 200, 168) 40%, /* 💡 zona brillante más ancha */
+    rgb(213, 200, 168) 60%, /* 💡 difuminado más largo */
+   rgb(107, 93, 61) 100%
+  );
+  background-size: 200% 200%;
+  animation: shimmerMove 10s ease-in-out infinite;
   padding: 60px 10%;
+  color: #8c7643;
+  text-align: center;
+  border-top: 2px solid rgba(255, 223, 150, 0.4);
+  border-bottom: 2px solid rgba(255, 223, 150, 0.4);
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.5);
+  overflow: hidden;
 }
+
+@keyframes shimmerMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 
 .about h2 {
   text-align: center;
@@ -155,10 +184,28 @@ nav a:hover, nav a.active {
 
 /* ===================== SERVICIOS ===================== */
 .servicios-page {
+  position: relative;
   text-align: center;
-  padding: 20px 20px;
-  background: rgba(235, 212, 155, 0.377);
+  padding: 60px 20px;
+
+  /* 🌟 Fondo dorado con brillo difuminado diagonal */
+  background: linear-gradient(
+    135deg,
+    rgb(155, 136, 89) 0%,      /* tono base suave */
+    rgb(255, 240, 200) 15%,    /* zona brillante más ancha */
+    rgba(255, 240, 200, 0.95) 60%,    /* mantiene el brillo central */
+    rgb(155, 136, 89) 100%     /* vuelve al tono original */
+  );
+
+  border-top: 2px solid rgba(255, 223, 150, 0.4);
+  border-bottom: 2px solid rgba(255, 223, 150, 0.4);
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.4);
+
+  color: #6c5b2c;
+  overflow: hidden;
 }
+
+
 
 .servicios-page h2 {
   font-family: 'Great Vibes', cursive;
@@ -170,7 +217,7 @@ nav a:hover, nav a.active {
 .servicios-page h3 {
   font-family: 'Great Vibes', cursive;
   font-size: 1.7rem;
-  color:  rgba(184, 160, 106, 0.85);
+  color:  rgb(210, 196, 152);
   margin-bottom: 10px;
 }
 
@@ -181,8 +228,13 @@ nav a:hover, nav a.active {
 }
 
 .card {
-  background: #152515;
-  border: 2px solid rgb(252, 234, 132);
+    background: linear-gradient(
+    135deg,
+    #152515,
+    #283d1d,
+    #152515
+  );
+  border: 2px solid rgb(238, 223, 172);
   border-radius: 15px;
   overflow: hidden;
   display: flex;
@@ -223,9 +275,9 @@ nav a:hover, nav a.active {
 .ver-mas {
   background: linear-gradient(
     135deg,
-    rgba(171, 151, 104, 0.85),
-    rgba(251, 235, 197, 0.8),
-    rgba(171, 151, 104, 0.85)
+   rgb(238, 223, 172),
+    rgba(251, 235, 197, 0.886),
+    rgb(238, 223, 172)
   );
   border: none;
   padding: 8px 15px;
@@ -237,7 +289,7 @@ nav a:hover, nav a.active {
 }
 
 .ver-mas:hover {
-  background: #a58356;
+  background: #8e7d5a;
   color: #fff;
 }
 
@@ -247,9 +299,10 @@ nav a:hover, nav a.active {
   overflow: hidden;
   background: linear-gradient(
     135deg,
-    rgba(184, 160, 106, 0.85),
-    rgba(251, 235, 197, 0.8),
-    rgba(210, 180, 112, 0.85)
+    rgb(231, 212, 172),
+    rgb(228, 215, 187),
+    rgb(228, 215, 187),
+    rgb(231, 212, 172)
   );;
   border-top: 2px solid rgb(167, 156, 90);
   transition: max-height 0.6s ease, padding 0.3s ease;
@@ -280,8 +333,8 @@ nav a:hover, nav a.active {
   margin-bottom: 10px;
   font-size: 1rem;
   line-height: 1.5;
-  text-align: justify;
-  font-family: 'Montserrat', sans-serif;
+  text-align: left;
+  font-family: 'playfair display', sans-serif;
 }
 
 /* Botón de cotizar */
@@ -430,7 +483,7 @@ footer {
     rgba(251, 235, 197, 0.8),
     rgba(171, 151, 104, 0.85)
   );
-  padding: 25px 8%;
+  padding: 15px 8%;
   text-align: center;
   color: #333;
   font-family: 'Raleway', sans-serif;
@@ -440,7 +493,7 @@ footer {
 .contacto-info h2 {
   font-family: 'Great Vibes', cursive;
   font-size: 1.8rem;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #b99654;
 }
 
