@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queen Studio - Panel Admin</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <script defer src="js/script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="Logo/logo.png" alt="Queen Studio Logo">
+      </a>
+    </div>
+
+    <!-- Botón menú hamburguesa -->
+    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+
+    <!-- Menú -->
+    <nav id="menu">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="servicios.html">Servicios</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="agendar.html">Agendar Cita</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- PANEL ADMIN -->
+  <section class="admin-page">
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; position: relative; padding: 0 60px;">
+      <h2 style="font-family: 'Great Vibes', cursive; font-size: 3rem; color: #5d4e2e; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin: 0;">Panel de Citas</h2>
+      <button
+        id="logoutBtn"
+        style="padding: 10px 20px; border-radius: 10px; border: none; background: #c62828; color: white; cursor: pointer; font-weight: bold; font-family: 'Montserrat', sans-serif; position: absolute; right: 20px;"
+      >
+        🚪 Cerrar Sesión
+      </button>
+    </div>
+
+    <!-- Conteo Total -->
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="display: inline-block; padding: 15px 40px; border-radius: 15px; background: linear-gradient(135deg, #8e7d5a, #a89668); color: white; font-weight: bold; font-size: 1.3rem; font-family: 'Montserrat', sans-serif; box-shadow: 0 6px 20px rgba(142, 125, 90, 0.4);">
+        📋 Total de Citas: <span id="count-todas" style="font-size: 1.5rem;">0</span>
+      </div>
+    </div>
+
+    <div class="citas-container" id="citasContainer">
+      <div class="loading" id="loading">Cargando citas...</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Queen Studio - Todos los derechos reservados</p>
+  </footer>
+
+  <!-- BOTÓN FLOTANTE -->
+  <a href="https://wa.me/528446002354" target="_blank" id="whatsapp-float">
+    <img src="Logo/whats_logo.PNG" alt="WhatsApp" />
+  </a>
+
+  <script>
+    // Verificar autenticación
+    if (localStorage.getItem('adminLoggedIn') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    let citas = [];
+
+    // Cerrar sesión
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('¿Segura que quieres cerrar sesión?')) {
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminEmail');
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Cargar citas desde localStorage
+    function cargarCitas() {
+      const citasGuardadas = localStorage.getItem('citas');
+      citas = citasGuardadas ? JSON.parse(citasGuardadas) : [];
+      actualizarContador();
+      mostrarCitas();
+    }
+
+    // Guardar citas en localStorage
+    function guardarCitas() {
+      localStorage.setItem('citas', JSON.stringify(citas));
+      actualizarContador();
+    }
+
+    // Actualizar contador
+    function actualizarContador() {
+      document.getElementById('count-todas').textContent = citas.length;
+    }
+
+    // Mostrar citas
+    function mostrarCitas() {
+      const container = document.getElementById('citasContainer');
+      const loading = document.getElementById('loading');
+      
+      loading.style.display = 'none';
+
+      if (citas.length === 0) {
+        container.innerHTML = `<p style="text-align: center; font-family: 'Montserrat', sans-serif; color: #4a463f; font-size: 1.2rem;">
+          No hay citas registradas
+        </p>`;
+        return;
+      }
+
+      container.innerHTML = citas.map(cita => `
+        <div style="background: linear-gradient(135deg, #1e5128, #2d6a3e, #1e5128); border: 3px solid #4caf50; border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4); transition: all 0.3s ease;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <h3 style="font-family: 'Great Vibes', cursive; font-size: 2.2rem; color: #a5d6a7; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">${cita.nombre}</h3>
+            <span class="cita-estado estado-${cita.estado.replace(' ', '-')}">
+              ${cita.estado.toUpperCase()}
+            </span>
+          </div>
+
+          <div style="background: linear-gradient(135deg, rgba(165, 214, 167, 0.2), rgba(129, 199, 132, 0.3)); border-left: 4px solid #4caf50; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">📱 Teléfono:</strong> <a href="tel:${cita.telefono}" style="color: #81c784; text-decoration: none; font-weight: 600;">${cita.telefono}</a></p>
+            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">💅 Servicio:</strong> ${cita.servicio}</p>
+            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">📅 Fecha:</strong> ${cita.fecha}</p>
+            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">🕐 Hora:</strong> ${cita.hora}</p>
+            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">💰 Anticipo:</strong> ${cita.anticipo ? '✅ Sí' : '❌ No'}</p>
+            ${cita.notas ? `<p style="color: #c8e6c9; margin-bottom: 0; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">📝 Notas:</strong> ${cita.notas}</p>` : ''}
+          </div>
+
+          <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+            ${cita.estado !== 'confirmada' ? `
+              <button onclick="cambiarEstado(${cita.id}, 'confirmada')" style="padding: 8px 15px; border-radius: 8px; border: none; background: #2e7d32; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+                ✓ Confirmar
+              </button>
+            ` : ''}
+            ${cita.estado !== 'cancelada' ? `
+              <button onclick="cambiarEstado(${cita.id}, 'cancelada')" style="padding: 8px 15px; border-radius: 8px; border: none; background: #c62828; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+                ✕ Cancelar
+              </button>
+            ` : ''}
+            ${cita.estado !== 'en espera' ? `
+              <button onclick="cambiarEstado(${cita.id}, 'en espera')" style="padding: 8px 15px; border-radius: 8px; border: none; background: #ed6c02; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+                ⏳ En Espera
+              </button>
+            ` : ''}
+            <button onclick="eliminarCita(${cita.id})" style="padding: 8px 15px; border-radius: 8px; border: none; background: #7d1d1d; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+              🗑️ Eliminar
+            </button>
+            <a href="https://wa.me/52${cita.telefono}?text=Hola%20${cita.nombre},%20te%20contacto%20de%20Queen%20Studio%20sobre%20tu%20cita%20de%20${cita.servicio}" target="_blank" style="padding: 8px 15px; border-radius: 8px; border: none; background: #25D366; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem; text-decoration: none; display: inline-block;">
+              💬 WhatsApp
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Cambiar estado de cita
+    function cambiarEstado(id, nuevoEstado) {
+      const cita = citas.find(c => c.id === id);
+      if (cita) {
+        cita.estado = nuevoEstado;
+        guardarCitas();
+        
+        // Recargar la página automáticamente
+        location.reload();
+      }
+    }
+
+    // Eliminar cita
+    function eliminarCita(id) {
+      if (confirm('¿Estás segura de eliminar esta cita? Esta acción no se puede deshacer.')) {
+        citas = citas.filter(c => c.id !== id);
+        guardarCitas();
+        
+        // Recargar la página automáticamente
+        location.reload();
+      }
+    }
+
+    // Cargar citas al iniciar
+    cargarCitas();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queen Studio - Agendar Cita</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- EmailJS para envío de correos -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script defer src="js/script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Great+Vibes&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script&family=Sacramento&family=Parisienne&family=Allura&family=Italianno&family=Pinyon+Script&family=Cinzel:wght@400;700&family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;700&family=Prata&family=Raleway:wght@400;700&family=Montserrat:wght@400;700&family=Josefin+Sans:wght@400;700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="Logo/logo.png" alt="Queen Studio Logo">
+      </a>
+    </div>
+
+    <!-- Botón menú hamburguesa -->
+    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+
+    <!-- Menú -->
+    <nav id="menu">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="servicios.html">Servicios</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="agendar.html" class="active">Agendar Cita</a></li>
+        <li><a href="login.html">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- FORMULARIO AGENDAR -->
+  <section class="agendar-page">
+    <h2>Agendar tu Cita</h2>
+
+    <div id="message" style="display: none;"></div>
+
+    <form class="agendar-form" id="agendarForm">
+      <div class="form-group">
+        <label for="nombre">Nombre completo *</label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          required
+          placeholder="Tu nombre"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono / WhatsApp *</label>
+        <input
+          type="tel"
+          id="telefono"
+          name="telefono"
+          required
+          placeholder="Ej: 8441234567"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="servicio">Servicio *</label>
+        <select id="servicio" name="servicio" required>
+          <option value="">Selecciona un servicio</option>
+          <option value="Pestañas y Cejas">Pestañas y Cejas</option>
+          <option value="Diseño de Color">Diseño de Color</option>
+          <option value="Alisados y Tratamiento Capilar">Alisados y Tratamiento Capilar</option>
+          <option value="Bases Permanentes">Bases Permanentes</option>
+          <option value="Uñas Acrílicas y Gelish">Uñas Acrílicas y Gelish</option>
+          <option value="Maquillaje y Peinados">Maquillaje y Peinados</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha preferida *</label>
+        <input type="date" id="fecha" name="fecha" required />
+      </div>
+
+      <div class="form-group">
+        <label for="hora">Hora preferida *</label>
+        <input type="time" id="hora" name="hora" required />
+      </div>
+
+      <div class="form-group checkbox-group">
+        <input type="checkbox" id="anticipo" name="anticipo" />
+        <label for="anticipo">Ya pagué anticipo</label>
+      </div>
+
+      <div class="form-group">
+        <label for="notas">Notas adicionales (opcional)</label>
+        <textarea
+          id="notas"
+          name="notas"
+          placeholder="Alguna especificación o detalle importante"
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        Agendar Cita
+      </button>
+    </form>
+
+    <p style="text-align: center; margin-top: 20px; font-family: 'Montserrat', sans-serif; color: #4a463f;">
+      También puedes contactarnos por 
+      <a href="https://wa.me/528446002354" target="_blank" style="color: #7b5b1f; font-weight: bold;">
+        WhatsApp
+      </a>
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Queen Studio - Todos los derechos reservados</p>
+  </footer>
+
+  <!-- BOTÓN FLOTANTE -->
+  <a href="https://wa.me/528446002354" target="_blank" id="whatsapp-float">
+    <img src="Logo/whats_logo.PNG" alt="WhatsApp" />
+  </a>
+
+</body>
+</html>
