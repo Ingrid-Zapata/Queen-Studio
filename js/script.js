@@ -119,7 +119,6 @@ if (agendarForm) {
       servicio: document.getElementById('servicio').value,
       fecha: document.getElementById('fecha').value,
       hora: document.getElementById('hora').value,
-      anticipo: document.getElementById('anticipo').checked ? 'Sí' : 'No',
       notas: document.getElementById('notas').value || 'Sin notas adicionales',
       estado: 'en espera',
       fechaCreacion: new Date().toISOString()
@@ -132,7 +131,6 @@ if (agendarForm) {
       servicio: formData.servicio,
       fecha: formData.fecha,
       hora: formData.hora,
-      anticipo: formData.anticipo,
       notas: formData.notas,
       to_email: 'queenstudioym@gmail.com' // Email destino de Queen Studio
     };
@@ -145,13 +143,31 @@ if (agendarForm) {
         // Guardar en localStorage
         const citasGuardadas = localStorage.getItem('citas');
         const citas = citasGuardadas ? JSON.parse(citasGuardadas) : [];
-        citas.push({...formData, anticipo: document.getElementById('anticipo').checked});
+        citas.push(formData);
         localStorage.setItem('citas', JSON.stringify(citas));
 
         // Mostrar mensaje de éxito
         messageDiv.className = 'success-message';
-        messageDiv.textContent = '✅ ¡Cita agendada y correo enviado! Te contactaremos pronto.';
+        messageDiv.innerHTML = `
+          <div class="message-card">
+            <div class="message-card__icon">✓</div>
+            <div class="message-card__body">
+              <div class="message-card__title">Solicitud enviada</div>
+              <div class="message-card__text">Tu solicitud ha sido enviada. Espera que nos contactemos personalmente contigo.</div>
+            </div>
+          </div>
+          <div class="message-card__actions">
+            <button type="button" class="message-card__button" id="closeMessageBtn">Aceptar</button>
+          </div>
+        `;
         messageDiv.style.display = 'block';
+
+        const closeMessageBtn = document.getElementById('closeMessageBtn');
+        if (closeMessageBtn) {
+          closeMessageBtn.addEventListener('click', () => {
+            messageDiv.style.display = 'none';
+          });
+        }
 
         // Limpiar formulario
         agendarForm.reset();
@@ -171,13 +187,31 @@ if (agendarForm) {
         // Aún así guardar en localStorage
         const citasGuardadas = localStorage.getItem('citas');
         const citas = citasGuardadas ? JSON.parse(citasGuardadas) : [];
-        citas.push({...formData, anticipo: document.getElementById('anticipo').checked});
+        citas.push(formData);
         localStorage.setItem('citas', JSON.stringify(citas));
         
         // Mostrar mensaje de advertencia
         messageDiv.className = 'error-message';
-        messageDiv.textContent = '⚠️ Cita guardada pero no se pudo enviar el correo. Contacta por WhatsApp.';
+        messageDiv.innerHTML = `
+          <div class="message-card">
+            <div class="message-card__icon">!</div>
+            <div class="message-card__body">
+              <div class="message-card__title">No se pudo enviar</div>
+              <div class="message-card__text">La cita se guardó, pero el correo no se envió. Contacta por WhatsApp.</div>
+            </div>
+          </div>
+          <div class="message-card__actions">
+            <button type="button" class="message-card__button" id="closeMessageBtn">Aceptar</button>
+          </div>
+        `;
         messageDiv.style.display = 'block';
+
+        const closeMessageBtn = document.getElementById('closeMessageBtn');
+        if (closeMessageBtn) {
+          closeMessageBtn.addEventListener('click', () => {
+            messageDiv.style.display = 'none';
+          });
+        }
 
         // Restaurar botón
         submitBtn.disabled = false;

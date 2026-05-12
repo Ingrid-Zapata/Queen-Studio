@@ -95,6 +95,17 @@ to_email: 'CORREO_QUEEN_STUDIO@gmail.com' // ← Correo donde llegarán las noti
 
 ---
 
+## 🔐 Acceso al Panel Admin
+
+Estas son las credenciales que actualmente usa el formulario de inicio de sesión en `login.html`:
+
+- **Usuario:** `admin@queenstudio.com`
+- **Contraseña:** `queen2025`
+
+Si después quieres cambiarlas, hazlo también en `login.html` para que coincidan.
+
+---
+
 ## 🎯 Ejemplo de Configuración Completa
 
 ```javascript

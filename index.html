@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Queen Studio - Inicio</title>
   <link rel="stylesheet" href="css/styles.css">
+  <!-- EmailJS para envío de correos -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script defer src="js/script.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Great+Vibes&display=swap" rel="stylesheet"> 
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet"> 
@@ -42,7 +44,7 @@
         <li><a href="index.html" class="active">Inicio</a></li>
         <li><a href="servicios.html">Servicios</a></li>
         <li><a href="productos.html">Productos</a></li>
-        <li><a href="agendar.html">Agendar Cita</a></li>
+        <li><a href="#agendar-cita">Agendar Cita</a></li>
         <li><a href="login.html">Admin</a></li>
       </ul>
     </nav>
@@ -55,22 +57,103 @@
   <section class="hero">
     <img src="Logo/logo.png" alt="Queen Studio Logo" class="hero-logo">
     <h1>Porque toda reina merece un cuidado real</h1>
-    <a href="servicios.html" class="btn">Ver Servicios</a>
+    <div class="hero-buttons">
+      <a href="servicios.html" class="btn btn-primary-hero">Ver Servicios</a>
+      <a href="productos.html" class="btn btn-secondary-hero">Ver Productos</a>
+    </div>
   </section>
 
 <!-- SOBRE NOSOTROS -->
 <section class="about">
   <h2>Sobre Queen Studio</h2>
   <div class="about-container">
+    <div class="about-image">
+      <img src="Logo/portada.jpeg" alt="Salón Queen Studio">
+    </div>
     <div class="about-text">
       <p>Fundado en 2021, Queen Studio representa el esfuerzo y la dedicación de un proyecto personal enfocado en ofrecer resultados profesionales y personalizados. Cada año implica nuevos aprendizajes, capacitaciones y la incorporación de técnicas innovadoras que permiten mantener un servicio actualizado y de alto nivel.
       <br>La misión es brindar una experiencia de confianza, donde la clienta reciba atención individual, resultados duraderos y un servicio respaldado por la responsabilidad, la puntualidad y el compromiso profesional..</p>
     </div>
-    <div class="about-image">
-      <img src="Logo/logo2.png" alt="Salón Queen Studio">
-    </div>
     
   </div>
+</section>
+
+<!-- AGENDA CITA -->
+<section class="agendar-page" id="agendar-cita">
+  <h2>Agendar tu Cita</h2>
+
+  <div id="message" style="display: none;"></div>
+
+  <form class="agendar-form" id="agendarForm">
+    <div class="form-group">
+      <label for="nombre">Nombre completo *</label>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        required
+        placeholder="Tu nombre"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono / WhatsApp *</label>
+      <input
+        type="tel"
+        id="telefono"
+        name="telefono"
+        required
+        placeholder="Ej: 8441234567"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="servicio">Servicio *</label>
+      <select id="servicio" name="servicio" required>
+        <option value="">Selecciona un servicio</option>
+        <option value="Pestañas y Cejas">Pestañas y Cejas</option>
+        <option value="Diseño de Color">Diseño de Color</option>
+        <option value="Alisados y Tratamiento Capilar">Alisados y Tratamiento Capilar</option>
+        <option value="Bases Permanentes">Bases Permanentes</option>
+        <option value="Uñas Acrílicas y Gelish">Uñas Acrílicas y Gelish</option>
+        <option value="Maquillaje y Peinados">Maquillaje y Peinados</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="fecha">Fecha preferida *</label>
+      <input type="date" id="fecha" name="fecha" required />
+    </div>
+
+    <div class="form-group">
+      <label for="hora">Hora preferida *</label>
+      <input type="time" id="hora" name="hora" required />
+    </div>
+
+    <div class="info-mensaje">
+      <p>📞 Nos pondremos en contacto contigo para confirmar tu cita y cotizar el precio del servicio.</p>
+    </div>
+
+    <div class="form-group">
+      <label for="notas">Notas adicionales (opcional)</label>
+      <textarea
+        id="notas"
+        name="notas"
+        placeholder="Alguna especificación o detalle importante"
+      ></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit" id="submitBtn">
+      Agendar Cita
+    </button>
+  </form>
+
+  <p style="text-align: center; margin-top: 20px; font-family: 'Montserrat', sans-serif; color: #4a463f;">
+    También puedes contactarnos por 
+    <a href="https://wa.me/528446002354" target="_blank" style="color: #7b5b1f; font-weight: bold;">
+      WhatsApp
+    </a>
+  </p>
 </section>
 
 <!-- CONTACTO (nuevo, en el index) -->
