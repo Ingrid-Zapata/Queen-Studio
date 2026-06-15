@@ -27,8 +27,7 @@
       <ul>
         <li><a href="index.html">Inicio</a></li>
         <li><a href="servicios.html">Servicios</a></li>
-        <li><a href="productos.html">Productos</a></li>
-        <li><a href="agendar.html">Agendar Cita</a></li>
+        <li><a href="index.html#agendar-cita">Agendar Cita</a></li>
       </ul>
     </nav>
   </header>
@@ -52,8 +51,20 @@
       </div>
     </div>
 
-    <div class="citas-container" id="citasContainer">
-      <div class="loading" id="loading">Cargando citas...</div>
+    <!-- Calendario Navegable -->
+    <div style="max-width: 500px; margin: 0 auto 40px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <div class="calendar-legend" style="margin-bottom: 20px; justify-content: center;">
+        <span class="legend-item"><span class="legend-dot free"></span> Disponible</span>
+        <span class="legend-item"><span class="legend-dot busy"></span> Con cita(s)</span>
+        <span class="legend-item"><span class="legend-dot closed"></span> Pasado</span>
+      </div>
+      <div id="adminCalendar"></div>
+    </div>
+
+    <!-- Lista de Citas Agendadas -->
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h3 style="color: #5d4e2e; text-align: center; margin-bottom: 20px;">Citas Agendadas</h3>
+      <div id="citasContainer"></div>
     </div>
   </section>
 
@@ -66,128 +77,6 @@
   <a href="https://wa.me/528446002354" target="_blank" id="whatsapp-float">
     <img src="Logo/whats_logo.PNG" alt="WhatsApp" />
   </a>
-
-  <script>
-    // Verificar autenticación
-    if (localStorage.getItem('adminLoggedIn') !== 'true') {
-      window.location.href = 'login.html';
-    }
-
-    let citas = [];
-
-    // Cerrar sesión
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      if (confirm('¿Segura que quieres cerrar sesión?')) {
-        localStorage.removeItem('adminLoggedIn');
-        localStorage.removeItem('adminEmail');
-        window.location.href = 'index.html';
-      }
-    });
-
-    // Cargar citas desde localStorage
-    function cargarCitas() {
-      const citasGuardadas = localStorage.getItem('citas');
-      citas = citasGuardadas ? JSON.parse(citasGuardadas) : [];
-      actualizarContador();
-      mostrarCitas();
-    }
-
-    // Guardar citas en localStorage
-    function guardarCitas() {
-      localStorage.setItem('citas', JSON.stringify(citas));
-      actualizarContador();
-    }
-
-    // Actualizar contador
-    function actualizarContador() {
-      document.getElementById('count-todas').textContent = citas.length;
-    }
-
-    // Mostrar citas
-    function mostrarCitas() {
-      const container = document.getElementById('citasContainer');
-      const loading = document.getElementById('loading');
-      
-      loading.style.display = 'none';
-
-      if (citas.length === 0) {
-        container.innerHTML = `<p style="text-align: center; font-family: 'Montserrat', sans-serif; color: #4a463f; font-size: 1.2rem;">
-          No hay citas registradas
-        </p>`;
-        return;
-      }
-
-      container.innerHTML = citas.map(cita => `
-        <div style="background: linear-gradient(135deg, #1e5128, #2d6a3e, #1e5128); border: 3px solid #4caf50; border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4); transition: all 0.3s ease;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-            <h3 style="font-family: 'Great Vibes', cursive; font-size: 2.2rem; color: #a5d6a7; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">${cita.nombre}</h3>
-            <span class="cita-estado estado-${cita.estado.replace(' ', '-')}">
-              ${cita.estado.toUpperCase()}
-            </span>
-          </div>
-
-          <div style="background: linear-gradient(135deg, rgba(165, 214, 167, 0.2), rgba(129, 199, 132, 0.3)); border-left: 4px solid #4caf50; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">📱 Teléfono:</strong> <a href="tel:${cita.telefono}" style="color: #81c784; text-decoration: none; font-weight: 600;">${cita.telefono}</a></p>
-            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">💅 Servicio:</strong> ${cita.servicio}</p>
-            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">📅 Fecha:</strong> ${cita.fecha}</p>
-            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">🕐 Hora:</strong> ${cita.hora}</p>
-            <p style="color: #c8e6c9; margin-bottom: 12px; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">💰 Anticipo:</strong> ${cita.anticipo ? '✅ Sí' : '❌ No'}</p>
-            ${cita.notas ? `<p style="color: #c8e6c9; margin-bottom: 0; font-size: 1.05rem; font-family: 'Montserrat', sans-serif;"><strong style="color: #a5d6a7;">📝 Notas:</strong> ${cita.notas}</p>` : ''}
-          </div>
-
-          <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-            ${cita.estado !== 'confirmada' ? `
-              <button onclick="cambiarEstado(${cita.id}, 'confirmada')" style="padding: 8px 15px; border-radius: 8px; border: none; background: #2e7d32; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
-                ✓ Confirmar
-              </button>
-            ` : ''}
-            ${cita.estado !== 'cancelada' ? `
-              <button onclick="cambiarEstado(${cita.id}, 'cancelada')" style="padding: 8px 15px; border-radius: 8px; border: none; background: #c62828; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
-                ✕ Cancelar
-              </button>
-            ` : ''}
-            ${cita.estado !== 'en espera' ? `
-              <button onclick="cambiarEstado(${cita.id}, 'en espera')" style="padding: 8px 15px; border-radius: 8px; border: none; background: #ed6c02; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
-                ⏳ En Espera
-              </button>
-            ` : ''}
-            <button onclick="eliminarCita(${cita.id})" style="padding: 8px 15px; border-radius: 8px; border: none; background: #7d1d1d; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem;">
-              🗑️ Eliminar
-            </button>
-            <a href="https://wa.me/52${cita.telefono}?text=Hola%20${cita.nombre},%20te%20contacto%20de%20Queen%20Studio%20sobre%20tu%20cita%20de%20${cita.servicio}" target="_blank" style="padding: 8px 15px; border-radius: 8px; border: none; background: #25D366; color: white; cursor: pointer; font-weight: bold; font-size: 0.9rem; text-decoration: none; display: inline-block;">
-              💬 WhatsApp
-            </a>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Cambiar estado de cita
-    function cambiarEstado(id, nuevoEstado) {
-      const cita = citas.find(c => c.id === id);
-      if (cita) {
-        cita.estado = nuevoEstado;
-        guardarCitas();
-        
-        // Recargar la página automáticamente
-        location.reload();
-      }
-    }
-
-    // Eliminar cita
-    function eliminarCita(id) {
-      if (confirm('¿Estás segura de eliminar esta cita? Esta acción no se puede deshacer.')) {
-        citas = citas.filter(c => c.id !== id);
-        guardarCitas();
-        
-        // Recargar la página automáticamente
-        location.reload();
-      }
-    }
-
-    // Cargar citas al iniciar
-    cargarCitas();
-  </script>
 
 </body>
 </html>

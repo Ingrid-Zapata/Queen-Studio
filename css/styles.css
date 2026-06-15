@@ -619,11 +619,11 @@ footer {
 @media (max-width: 768px) {
   /* Hero responsivo - imagen escalada */
   .hero {
-    padding: 40px 20px 20px;
-    background-size: contain;
-    background-position: center top;
+    padding: 44px 20px 28px;
+    background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
-    min-height: auto;
+    min-height: 72vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -694,8 +694,9 @@ footer {
 /* ===================== RESPONSIVE EXTRA PEQUEÑO (móviles pequeños) ===================== */
 @media (max-width: 480px) {
   .hero {
-    padding: 30px 15px 15px;
-    gap: 8px;
+    padding: 34px 15px 22px;
+    gap: 10px;
+    min-height: 68vh;
   }
 
   .hero-logo {
@@ -971,6 +972,202 @@ footer {
   line-height: 1.6;
 }
 
+/* ===================== CALENDARIO FECHA ===================== */
+.fecha-calendar {
+  background: rgba(21, 37, 21, 0.3);
+  border: 1px solid rgba(185, 150, 84, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 8px;
+}
+
+.month-calendar {
+  display: grid;
+  gap: 12px;
+}
+
+.month-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.month-calendar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f6e7b4;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
+
+.month-nav-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(185, 150, 84, 0.45);
+  background: rgba(21, 37, 21, 0.45);
+  color: #f7ecd0;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.month-nav-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(185, 150, 84, 0.28);
+}
+
+.month-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.month-calendar-weekdays,
+.month-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.month-calendar-weekday {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #d8ccaa;
+  padding: 4px 0;
+}
+
+.calendar-day {
+  min-height: 56px;
+  border-radius: 10px;
+  border: 1px solid rgba(185, 150, 84, 0.28);
+  background: rgba(185, 150, 84, 0.12);
+  color: #f7ecd0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.calendar-day:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.calendar-day--empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.calendar-day--available {
+    background: rgba(68, 96, 68, 0.28);
+  color: #50713c;
+}
+
+.calendar-day--busy {
+    background: rgba(237, 108, 2, 0.35);
+  border-color: rgba(237, 108, 2, 0.45);
+  color: #fff1d6;
+}
+
+.calendar-day--occupied {
+    background: rgba(198, 40, 40, 0.38);
+  border-color: rgba(198, 40, 40, 0.55);
+  color: #ffe6e6;
+}
+
+.calendar-day--disabled {
+    background: rgba(120, 120, 120, 0.18);
+  border-color: rgba(120, 120, 120, 0.2);
+  color: rgba(247, 236, 208, 0.35);
+  cursor: not-allowed;
+}
+
+.calendar-day--full {
+    background: rgba(198, 40, 40, 0.38);
+  border-color: rgba(198, 40, 40, 0.55);
+  color: #ffe6e6;
+  cursor: not-allowed;
+}
+
+.calendar-day--selected {
+  background: #b99654;
+  border-color: #f1db97;
+  color: white;
+  box-shadow: 0 0 0 2px rgba(241, 219, 151, 0.25);
+}
+
+.calendar-day-number {
+  z-index: 1;
+}
+
+.calendar-day-dot {
+  position: absolute;
+  bottom: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff5d5d;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15);
+}
+
+.calendar-legend--months {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(185, 150, 84, 0.2);
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.free {
+  background: rgba(76, 175, 80, 0.4);
+  border: 1px solid rgba(76, 175, 80, 0.6);
+}
+
+.legend-dot.busy {
+  background: rgba(237, 108, 2, 0.4);
+  border: 1px solid rgba(237, 108, 2, 0.6);
+}
+
+.legend-dot.full {
+  background: rgba(198, 40, 40, 0.5);
+  border: 1px solid rgba(198, 40, 40, 0.7);
+}
+
+#fechaFallback {
+  background: rgba(240, 240, 240, 0.8);
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 6px;
+  color: #666;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
 .btn-enviar,
 .btn-submit {
   width: 100%;
@@ -998,6 +1195,22 @@ footer {
 .btn-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .month-calendar-weekdays,
+  .month-calendar-grid {
+    gap: 4px;
+  }
+
+  .calendar-day {
+    min-height: 50px;
+    font-size: 0.85rem;
+  }
+
+  .month-calendar-header {
+    align-items: flex-start;
+  }
 }
 
 .success-message {
@@ -1124,4 +1337,74 @@ footer {
   .message-card__actions {
     padding: 0 16px 16px;
   }
+}
+
+/* ===================== FORMULARIO DINÁMICO ===================== */
+.service-fields {
+  margin-bottom: 20px;
+}
+
+.service-fieldset {
+  border: 1px solid rgba(238, 223, 172, 0.35);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.service-fieldset legend {
+  padding: 0 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: rgb(238, 223, 172);
+}
+
+.service-options {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.service-option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: rgb(228, 215, 187);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+}
+
+.service-option input {
+  margin-top: 3px;
+  width: auto;
+}
+
+.service-option small {
+  display: block;
+  color: rgba(228, 215, 187, 0.8);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.service-note {
+  margin: 12px 0 18px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border-left: 4px solid rgb(238, 223, 172);
+  background: rgba(238, 223, 172, 0.12);
+  color: rgb(243, 234, 210);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+}
+
+.readonly-field {
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: #2c2c2c;
+}
+
+.time-summary {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  color: rgb(228, 215, 187);
+  font-family: 'Montserrat', sans-serif;
 }

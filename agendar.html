@@ -30,7 +30,6 @@
       <ul>
         <li><a href="index.html">Inicio</a></li>
         <li><a href="servicios.html">Servicios</a></li>
-        <li><a href="productos.html">Productos</a></li>
         <li><a href="agendar.html" class="active">Agendar Cita</a></li>
         <li><a href="login.html">Admin</a></li>
       </ul>
@@ -70,24 +69,41 @@
         <label for="servicio">Servicio *</label>
         <select id="servicio" name="servicio" required>
           <option value="">Selecciona un servicio</option>
-          <option value="Pestañas y Cejas">Pestañas y Cejas</option>
-          <option value="Diseño de Color">Diseño de Color</option>
-          <option value="Alisados y Tratamiento Capilar">Alisados y Tratamiento Capilar</option>
-          <option value="Bases Permanentes">Bases Permanentes</option>
-          <option value="Uñas Acrílicas y Gelish">Uñas Acrílicas y Gelish</option>
-          <option value="Maquillaje y Peinados">Maquillaje y Peinados</option>
+          <option value="pestanas_cejas">Pestañas y Cejas</option>
+          <option value="diseno_color">Diseño de Color</option>
+          <option value="alisados_tratamientos">Alisados, Alaciados y Tratamientos</option>
+          <option value="base_permanente">Bases Permanentes</option>
+          <option value="unas_acrilicas_gelish">Uñas</option>
+          <option value="maquillaje_peinados">Maquillaje y Peinados</option>
+        </select>
+      </div>
+
+      <div id="serviceFields"></div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha preferida *</label>
+        <div id="fechaCalendar" class="fecha-calendar" style="display: none;">
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <input type="hidden" id="fecha" name="fecha" required />
+        </div>
+        <div id="fechaFallback" style="padding: 10px; background: #f0f0f0; border-radius: 4px; color: #666;">
+          Selecciona un servicio primero
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="hora">Hora de inicio *</label>
+        <select id="hora" name="hora" required>
+          <option value="">Selecciona una fecha primero</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="fecha">Fecha preferida *</label>
-        <input type="date" id="fecha" name="fecha" required />
+        <label for="horaFin">Hora de finalización estimada *</label>
+        <input type="text" id="horaFin" name="horaFin" readonly placeholder="Se calculará automáticamente" />
       </div>
 
-      <div class="form-group">
-        <label for="hora">Hora preferida *</label>
-        <input type="time" id="hora" name="hora" required />
-      </div>
+      <div id="serviceNotice" class="info-mensaje" style="display:none;"></div>
 
       <div class="info-mensaje">
         <p>📞 Nos pondremos en contacto contigo para confirmar tu cita y cotizar el precio del servicio.</p>
