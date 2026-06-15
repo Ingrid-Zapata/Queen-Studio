@@ -100,16 +100,24 @@ crearCarrusel('slider-maquillaje', 'imagenes/5. maquillaje y peinado/', 19);
 // CONFIGURACIÓN DE AGENDA
 // =========================
 const STORAGE_KEY = 'citas';
+const DELETED_CITA_IDS_KEY = 'citas_deleted_ids';
 const SUPABASE_URL = window.QUEEN_STUDIO_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = window.QUEEN_STUDIO_SUPABASE_ANON_KEY || '';
 const SUPABASE_TABLE = 'citas';
+const SUPABASE_ESTADOS_TABLE = 'cita_estados';
 const SLOT_STEP_MINUTES = 30;
 const DAYS_TO_RENDER = 30;
 const CALENDAR_MONTHS_AHEAD = 12;
 
 let calendarMonthOffset = 0;
 let citasCache = null;
+let citaEstadosCache = [
+  { clave: 'en espera', etiqueta: 'En espera', color: '#ed6c02', orden: 1 },
+  { clave: 'confirmada', etiqueta: 'Confirmada', color: '#2e7d32', orden: 2 },
+  { clave: 'cancelada', etiqueta: 'Cancelada', color: '#c62828', orden: 3 },
+];
 let citasHydrationPromise = null;
+let estadosHydrationPromise = null;
 let citasRefreshIntervalId = null;
 
 const WORKING_HOURS = {
@@ -403,7 +411,13 @@ function getCitas() {
 
   try {
     const parsed = JSON.parse(citasGuardadas);
-    citasCache = Array.isArray(parsed) ? parsed : [];
+    const deletedIds = readDeletedCitaIds();
+    citasCache = Array.isArray(parsed)
+      ? parsed.filter((cita) => !deletedIds.has(String(cita.id)))
+      : [];
+    if (Array.isArray(parsed) && citasCache.length !== parsed.length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
+    }
     return citasCache;
   } catch {
     citasCache = [];
@@ -411,15 +425,55 @@ function getCitas() {
   }
 }
 
-function saveCitas(citas) {
-  citasCache = Array.isArray(citas) ? citas.map((cita) => ({ ...cita })) : [];
+function readDeletedCitaIds() {
+  const deletedIdsRaw = localStorage.getItem(DELETED_CITA_IDS_KEY);
+
+  if (!deletedIdsRaw) {
+    return new Set();
+  }
+
+  try {
+    const parsed = JSON.parse(deletedIdsRaw);
+    return new Set(Array.isArray(parsed) ? parsed.map((value) => String(value)) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveDeletedCitaIds(deletedIds) {
+  localStorage.setItem(
+    DELETED_CITA_IDS_KEY,
+    JSON.stringify(Array.from(new Set(deletedIds.map((value) => String(value))))),
+  );
+}
+
+function markCitaAsDeleted(id) {
+  const deletedIds = readDeletedCitaIds();
+  deletedIds.add(String(id));
+  saveDeletedCitaIds(Array.from(deletedIds));
+}
+
+function isTombstonedCitaId(id) {
+  return readDeletedCitaIds().has(String(id));
+}
+
+function saveCitas(citas, options = {}) {
+  const previousCache = Array.isArray(options.previousCache)
+    ? options.previousCache.map((c) => ({ ...c }))
+    : (Array.isArray(citasCache) ? citasCache.map((c) => ({ ...c })) : readLocalCitas());
+  const deletedIds = readDeletedCitaIds();
+  citasCache = Array.isArray(citas)
+    ? citas.filter((cita) => !deletedIds.has(String(cita.id))).map((cita) => ({ ...cita }))
+    : [];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
 
   if (isSupabaseConfigured()) {
-    void syncCitasToSupabase(citasCache).catch((error) => {
+    return syncCitasToSupabase(citasCache, { previousCache }).catch((error) => {
       console.error('No se pudo sincronizar las citas con Supabase:', error);
+      throw error;
     });
   }
+  return Promise.resolve();
 }
 
 function isSupabaseConfigured() {
@@ -445,7 +499,16 @@ function readLocalCitas() {
 
   try {
     const parsed = JSON.parse(citasGuardadas);
-    return Array.isArray(parsed) ? parsed : [];
+    const deletedIds = readDeletedCitaIds();
+    const filtered = Array.isArray(parsed)
+      ? parsed.filter((cita) => !deletedIds.has(String(cita.id)))
+      : [];
+
+    if (Array.isArray(parsed) && filtered.length !== parsed.length) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    }
+
+    return filtered;
   } catch {
     return [];
   }
@@ -487,6 +550,87 @@ function normalizeCitaFromSupabase(row) {
     estado: row.estado || 'en espera',
     fechaCreacion: row.fecha_creacion || new Date().toISOString(),
   };
+}
+
+function normalizeEstadoFromSupabase(row) {
+  return {
+    clave: row.clave || '',
+    etiqueta: row.etiqueta || row.clave || '',
+    color: row.color || '#6b7280',
+    orden: Number(row.orden) || 0,
+    descripcion: row.descripcion || '',
+  };
+}
+
+async function fetchEstadosFromSupabase() {
+  if (!isSupabaseConfigured()) {
+    return null;
+  }
+
+  const url = new URL(`${SUPABASE_URL}/rest/v1/${SUPABASE_ESTADOS_TABLE}`);
+  url.searchParams.set('select', '*');
+  url.searchParams.set('order', 'orden.asc');
+  url.searchParams.append('order', 'etiqueta.asc');
+
+  const response = await fetch(url.toString(), {
+    headers: getSupabaseHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Supabase estados fetch failed: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) ? data.map(normalizeEstadoFromSupabase) : [];
+}
+
+async function hydrateEstadosFromSupabase() {
+  if (estadosHydrationPromise) {
+    return estadosHydrationPromise;
+  }
+
+  estadosHydrationPromise = (async () => {
+    if (!isSupabaseConfigured()) {
+      return citaEstadosCache;
+    }
+
+    try {
+      const remoteEstados = await fetchEstadosFromSupabase();
+      if (Array.isArray(remoteEstados) && remoteEstados.length > 0) {
+        citaEstadosCache = remoteEstados;
+      }
+    } catch (error) {
+      console.error('No se pudieron cargar los estados desde Supabase, usando caché local:', error);
+    }
+
+    return citaEstadosCache;
+  })().finally(() => {
+    estadosHydrationPromise = null;
+  });
+
+  return estadosHydrationPromise;
+}
+
+function getEstadoMeta(estadoClave) {
+  return citaEstadosCache.find((estado) => estado.clave === estadoClave) || {
+    clave: estadoClave || '',
+    etiqueta: estadoClave || '',
+    color: '#6b7280',
+    orden: 0,
+    descripcion: '',
+  };
+}
+
+function getEstadoButtonsForCita(cita) {
+  return citaEstadosCache
+    .filter((estado) => estado.clave !== cita.estado && estado.clave !== 'cancelada')
+    .sort((left, right) => left.orden - right.orden)
+    .map((estado) => `
+      <button type="button" onclick="cambiarEstado(${cita.id}, '${estado.clave.replace(/'/g, "\\'")}')" style="padding:8px 12px; border:none; border-radius:8px; background:${estado.color}; color:#fff; cursor:pointer;">
+        ${estado.etiqueta}
+      </button>
+    `)
+    .join('');
 }
 
 async function fetchCitasFromSupabase() {
@@ -542,10 +686,16 @@ async function syncCitasToSupabase(citas, options = {}) {
   }
 
   const forceAll = Boolean(options.forceAll);
+  const deletedIds = readDeletedCitaIds();
 
   const currentLocalCitas = Array.isArray(citasCache) ? citasCache : readLocalCitas();
-  const previousById = new Map(currentLocalCitas.map((cita) => [String(cita.id), cita]));
-  const nextById = new Map((Array.isArray(citas) ? citas : []).map((cita) => [String(cita.id), cita]));
+  const previousSource = Array.isArray(options.previousCache) ? options.previousCache : currentLocalCitas;
+  const previousById = new Map(previousSource.map((cita) => [String(cita.id), cita]));
+  const nextById = new Map(
+    (Array.isArray(citas) ? citas : [])
+      .filter((cita) => !deletedIds.has(String(cita.id)))
+      .map((cita) => [String(cita.id), cita]),
+  );
 
   const upserts = [];
   const deletes = [];
@@ -601,6 +751,38 @@ async function syncCitasToSupabase(citas, options = {}) {
   }
 }
 
+async function deleteCitaFromSupabase(id) {
+  if (!isSupabaseConfigured()) {
+    return;
+  }
+
+  try {
+    const rpcResponse = await fetch(`${SUPABASE_URL}/rest/v1/rpc/eliminar_cita_por_id`, {
+      method: 'POST',
+      headers: getSupabaseHeaders(),
+      body: JSON.stringify({ p_id: Number(id) }),
+    });
+
+    if (rpcResponse.ok) {
+      return;
+    }
+  } catch (rpcError) {
+    console.error('RPC delete failed, trying direct REST delete:', rpcError);
+  }
+
+  const deleteUrl = new URL(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`);
+  deleteUrl.searchParams.set('id', `eq.${Number(id)}`);
+
+  const restResponse = await fetch(deleteUrl.toString(), {
+    method: 'DELETE',
+    headers: getSupabaseHeaders(),
+  });
+
+  if (!restResponse.ok) {
+    throw new Error(`Supabase delete failed: ${restResponse.status}`);
+  }
+}
+
 async function hydrateCitasFromSupabase() {
   if (citasHydrationPromise) {
     return citasHydrationPromise;
@@ -617,15 +799,31 @@ async function hydrateCitasFromSupabase() {
     try {
       const remoteCitas = await fetchCitasFromSupabase();
       if (Array.isArray(remoteCitas)) {
-        const mergedCitas = mergeCitasById(remoteCitas, localCitas);
-        citasCache = mergedCitas;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
+        const deletedIds = readDeletedCitaIds();
+        const filteredRemoteCitas = remoteCitas.filter((cita) => !deletedIds.has(String(cita.id)));
+        const remoteDeletedIds = remoteCitas
+          .filter((cita) => deletedIds.has(String(cita.id)))
+          .map((cita) => cita.id);
 
-        if (mergedCitas.length > remoteCitas.length) {
-          try {
-            await syncCitasToSupabase(mergedCitas, { forceAll: true });
-          } catch (syncError) {
-            console.error('No se pudieron migrar citas locales a Supabase:', syncError);
+        if (remoteDeletedIds.length > 0) {
+          await Promise.all(remoteDeletedIds.map((id) => deleteCitaFromSupabase(id).catch((error) => {
+            console.error(`No se pudo re-eliminar la cita ${id} desde Supabase:`, error);
+          })));
+        }
+
+        if (remoteCitas.length > 0) {
+          citasCache = filteredRemoteCitas;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
+        } else {
+          citasCache = localCitas;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
+
+          if (citasCache.length > 0) {
+            try {
+              await syncCitasToSupabase(citasCache, { forceAll: true });
+            } catch (syncError) {
+              console.error('No se pudieron migrar citas locales a Supabase:', syncError);
+            }
           }
         }
       } else {
@@ -1864,16 +2062,17 @@ function getAvailableSlotsForAdmin(appointments, schedule) {
 }
 
 function renderAdminAppointmentCard(cita) {
-  const statusClass = `estado-${String(cita.estado || 'en espera').replace(/\s+/g, '-')}`;
+  const estadoMeta = getEstadoMeta(cita.estado || 'en espera');
   const endValue = cita.horaFin || (cita.hora && cita.duracionMin ? formatTimeLabel(addMinutes(cita.hora, cita.duracionMin)) : '');
   const serviceDetail = cita.servicioDetalle && cita.servicioDetalle !== cita.servicio ? cita.servicioDetalle : cita.servicio;
   const sanitizedPhone = String(cita.telefono || '').replace(/\D/g, '');
+  const estadoEtiqueta = estadoMeta.etiqueta || String(cita.estado || 'en espera');
 
   return `
     <div class="appointment-card">
       <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:8px;">
         <strong>${cita.nombre}</strong>
-        <span class="cita-estado ${statusClass}">${String(cita.estado || 'en espera').toUpperCase()}</span>
+        <span class="cita-estado" style="background:${estadoMeta.color}; color:#fff;">${estadoEtiqueta.toUpperCase()}</span>
       </div>
       <div><strong>Teléfono:</strong> <a href="tel:${cita.telefono}" style="color:#fff3c1;">${cita.telefono}</a></div>
       <div><strong>Servicio:</strong> ${serviceDetail}</div>
@@ -1881,10 +2080,8 @@ function renderAdminAppointmentCard(cita) {
       ${endValue ? `<div><strong>Fin estimado:</strong> ${endValue}</div>` : ''}
       ${cita.notas ? `<div><strong>Notas:</strong> ${cita.notas}</div>` : ''}
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-        ${cita.estado !== 'confirmada' ? `<button type="button" onclick="cambiarEstado(${cita.id}, 'confirmada')" style="padding:8px 12px; border:none; border-radius:8px; background:#2e7d32; color:#fff; cursor:pointer;">Confirmar</button>` : ''}
-        ${cita.estado !== 'cancelada' ? `<button type="button" onclick="cambiarEstado(${cita.id}, 'cancelada')" style="padding:8px 12px; border:none; border-radius:8px; background:#c62828; color:#fff; cursor:pointer;">Cancelar</button>` : ''}
-        ${cita.estado !== 'en espera' ? `<button type="button" onclick="cambiarEstado(${cita.id}, 'en espera')" style="padding:8px 12px; border:none; border-radius:8px; background:#ed6c02; color:#fff; cursor:pointer;">En espera</button>` : ''}
-        <button type="button" onclick="eliminarCita(${cita.id})" style="padding:8px 12px; border:none; border-radius:8px; background:#7d1d1d; color:#fff; cursor:pointer;">Eliminar</button>
+        ${getEstadoButtonsForCita(cita)}
+        <button type="button" onclick="cancelarCita(${cita.id})" style="padding:8px 12px; border:none; border-radius:8px; background:#7d1d1d; color:#fff; cursor:pointer;">Cancelar y eliminar</button>
         <a href="https://wa.me/52${sanitizedPhone}?text=Hola%20${encodeURIComponent(cita.nombre)},%20te%20contacto%20de%20Queen%20Studio%20sobre%20tu%20cita%20de%20${encodeURIComponent(serviceDetail)}" target="_blank" style="padding:8px 12px; border-radius:8px; background:#25D366; color:#fff; text-decoration:none; display:inline-block;">WhatsApp</a>
       </div>
     </div>
@@ -1892,29 +2089,57 @@ function renderAdminAppointmentCard(cita) {
 }
 
 window.cambiarEstado = function cambiarEstado(id, nuevoEstado) {
-  const citas = getCitas();
-  const cita = citas.find((item) => item.id === id);
-  if (!cita) {
+  if (nuevoEstado === 'cancelada') {
+    void window.cancelarCita(id);
     return;
   }
 
-  cita.estado = nuevoEstado;
-  saveCitas(citas);
+  const citas = getCitas();
+  const citaIndex = citas.findIndex((item) => item.id === id);
+  if (citaIndex === -1) {
+    return;
+  }
+
+  const previousCache = citas.map((item) => ({ ...item }));
+  const nextCitas = citas.map((item) => ({ ...item }));
+  nextCitas[citaIndex].estado = nuevoEstado;
+
+  saveCitas(nextCitas, { previousCache });
   renderAdminCalendar();
 };
 
-window.eliminarCita = function eliminarCita(id) {
+window.cancelarCita = async function cancelarCita(id) {
   if (!window.confirm('¿Estás segura de eliminar esta cita? Esta acción no se puede deshacer.')) {
     return;
   }
 
-  const citas = getCitas().filter((item) => item.id !== id);
-  saveCitas(citas);
-  renderAdminCalendar();
+  const previousCache = getCitas().map((item) => ({ ...item }));
+  const citas = previousCache.filter((item) => item.id !== id);
+
+  try {
+    if (isSupabaseConfigured()) {
+      await deleteCitaFromSupabase(id);
+    }
+
+    markCitaAsDeleted(id);
+
+    citasCache = citas.map((item) => ({ ...item }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
+    renderAdminCalendar();
+    alert('Cita eliminada y sincronizada con éxito.');
+  } catch (error) {
+    console.error('Error al eliminar la cita:', error);
+    alert('No se pudo eliminar la cita en el servidor. Revisa la consola Network y permisos RLS.');
+    // Re-render so UI stays consistent with local cache
+    renderAdminCalendar();
+  }
 };
 
 async function bootstrapCitasData() {
-  await hydrateCitasFromSupabase();
+  await Promise.all([
+    hydrateCitasFromSupabase(),
+    hydrateEstadosFromSupabase(),
+  ]);
 
   if (document.getElementById('adminCalendar')) {
     renderAdminCalendar();
