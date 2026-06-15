@@ -100,11 +100,17 @@ crearCarrusel('slider-maquillaje', 'imagenes/5. maquillaje y peinado/', 19);
 // CONFIGURACIÓN DE AGENDA
 // =========================
 const STORAGE_KEY = 'citas';
+const SUPABASE_URL = window.QUEEN_STUDIO_SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = window.QUEEN_STUDIO_SUPABASE_ANON_KEY || '';
+const SUPABASE_TABLE = 'citas';
 const SLOT_STEP_MINUTES = 30;
 const DAYS_TO_RENDER = 30;
 const CALENDAR_MONTHS_AHEAD = 12;
 
 let calendarMonthOffset = 0;
+let citasCache = null;
+let citasHydrationPromise = null;
+let citasRefreshIntervalId = null;
 
 const WORKING_HOURS = {
   1: { start: '08:30', end: '17:00' },
@@ -139,7 +145,7 @@ const SERVICE_DEFINITIONS = {
         items: [
           {
             key: 'cejas_paquete',
-            label: 'Paquete vidajismo depilación lámina y HD ceja 4K',
+            label: 'Paquete visajismo, depilación, láminado y HD ceja 4K',
             duration: 120,
             description: 'Dura 2 horas.',
           },
@@ -321,20 +327,53 @@ const SERVICE_DEFINITIONS = {
             key: 'sociales',
             label: 'Sociales',
             duration: 180,
-            specs: ['Cumpleaños', 'Fiesta / evento social', 'Cena especial', 'Salidas importantes', 'Eventos formales', 'XV años (quinceañera o invitada)', 'Bodas (novia, dama, invitada)', 'Graduaciones', 'Bautizos', 'Primera comunión', 'Confirmaciones'],
+            specs: ['Cumpleaños', 'Fiesta / evento social', 'Cena especial', 'Salidas importantes', 'Eventos corporativos'],
             description: 'Dura 3 horas.',
           },
           {
             key: 'profesionales',
             label: 'Profesionales',
-            duration: 180,
-            specs: ['Sesión de fotos', 'Eventos corporativos', 'Conferencias'],
-            description: 'Dura 3 horas.',
+            duration: 300,
+            specs: ['Eventos formales', 'XV años', 'Bodas', 'Graduaciones', 'Sesión de fotos', 'Conferencias'],
+            description: 'Dura 5 horas.',
           },
         ],
       },
     ],
   }
+  ,
+  otro: {
+    label: 'Otro',
+    requiresSelection: true,
+    note: 'Selecciona una opción para calcular la duración.',
+    groups: [
+      {
+        title: 'Tipo de servicio',
+        type: 'radio',
+        name: 'otro_tipo_servicio',
+        items: [
+          {
+            key: 'tinte_cabello',
+            label: 'Tinte de cabello',
+            duration: 60,
+            description: 'Duración estimada de 1 hora.',
+          },
+          {
+            key: 'planchado_cabello',
+            label: 'Planchado de cabello',
+            duration: 60,
+            description: 'Duración estimada de 1 hora.',
+          },
+          {
+            key: 'corte_cabello',
+            label: 'Corte de cabello',
+            duration: 60,
+            description: 'Duración estimada de 1 hora.',
+          },
+        ],
+      },
+    ],
+  },
 };
 
 const SERVICE_LABELS = Object.fromEntries(
@@ -351,6 +390,53 @@ const SERVICE_DURATION_BY_LABEL = {
 };
 
 function getCitas() {
+  if (Array.isArray(citasCache)) {
+    return citasCache;
+  }
+
+  const citasGuardadas = localStorage.getItem(STORAGE_KEY);
+
+  if (!citasGuardadas) {
+    citasCache = [];
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(citasGuardadas);
+    citasCache = Array.isArray(parsed) ? parsed : [];
+    return citasCache;
+  } catch {
+    citasCache = [];
+    return [];
+  }
+}
+
+function saveCitas(citas) {
+  citasCache = Array.isArray(citas) ? citas.map((cita) => ({ ...cita })) : [];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
+
+  if (isSupabaseConfigured()) {
+    void syncCitasToSupabase(citasCache).catch((error) => {
+      console.error('No se pudo sincronizar las citas con Supabase:', error);
+    });
+  }
+}
+
+function isSupabaseConfigured() {
+  return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+}
+
+function getSupabaseHeaders() {
+  return {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Prefer: 'return=minimal',
+  };
+}
+
+function readLocalCitas() {
   const citasGuardadas = localStorage.getItem(STORAGE_KEY);
 
   if (!citasGuardadas) {
@@ -365,8 +451,226 @@ function getCitas() {
   }
 }
 
-function saveCitas(citas) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(citas));
+function normalizeCitaForSupabase(cita) {
+  return {
+    id: Number(cita.id),
+    nombre: cita.nombre || '',
+    telefono: cita.telefono || '',
+    servicio: cita.servicio || '',
+    servicio_clave: cita.servicioClave || '',
+    servicio_detalle: cita.servicioDetalle || '',
+    fecha: cita.fecha || '',
+    hora: cita.hora || '',
+    hora_fin: cita.horaFin || '',
+    duracion_min: Number(cita.duracionMin) || 0,
+    duracion_texto: cita.duracionTexto || '',
+    notas: cita.notas || '',
+    estado: cita.estado || 'en espera',
+    fecha_creacion: cita.fechaCreacion || new Date().toISOString(),
+  };
+}
+
+function normalizeCitaFromSupabase(row) {
+  return {
+    id: Number(row.id),
+    nombre: row.nombre || '',
+    telefono: row.telefono || '',
+    servicio: row.servicio || '',
+    servicioClave: row.servicio_clave || '',
+    servicioDetalle: row.servicio_detalle || '',
+    fecha: row.fecha || '',
+    hora: row.hora || '',
+    horaFin: row.hora_fin || '',
+    duracionMin: Number(row.duracion_min) || 0,
+    duracionTexto: row.duracion_texto || '',
+    notas: row.notas || '',
+    estado: row.estado || 'en espera',
+    fechaCreacion: row.fecha_creacion || new Date().toISOString(),
+  };
+}
+
+async function fetchCitasFromSupabase() {
+  if (!isSupabaseConfigured()) {
+    return null;
+  }
+
+  const url = new URL(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`);
+  url.searchParams.set('select', '*');
+  url.searchParams.set('order', 'fecha.asc');
+  url.searchParams.append('order', 'hora.asc');
+
+  const response = await fetch(url.toString(), {
+    headers: getSupabaseHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Supabase fetch failed: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) ? data.map(normalizeCitaFromSupabase) : [];
+}
+
+function citasAreEqual(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function mergeCitasById(primaryCitas = [], secondaryCitas = []) {
+  const mergedById = new Map();
+
+  primaryCitas.forEach((cita) => {
+    mergedById.set(String(cita.id), { ...cita });
+  });
+
+  secondaryCitas.forEach((cita) => {
+    const key = String(cita.id);
+    if (!mergedById.has(key)) {
+      mergedById.set(key, { ...cita });
+    }
+  });
+
+  return Array.from(mergedById.values()).sort((left, right) => {
+    const leftDate = `${left.fecha || ''}T${left.hora || '00:00'}`;
+    const rightDate = `${right.fecha || ''}T${right.hora || '00:00'}`;
+    return leftDate.localeCompare(rightDate);
+  });
+}
+
+async function syncCitasToSupabase(citas, options = {}) {
+  if (!isSupabaseConfigured()) {
+    return;
+  }
+
+  const forceAll = Boolean(options.forceAll);
+
+  const currentLocalCitas = Array.isArray(citasCache) ? citasCache : readLocalCitas();
+  const previousById = new Map(currentLocalCitas.map((cita) => [String(cita.id), cita]));
+  const nextById = new Map((Array.isArray(citas) ? citas : []).map((cita) => [String(cita.id), cita]));
+
+  const upserts = [];
+  const deletes = [];
+
+  if (forceAll) {
+    nextById.forEach((nextCita) => {
+      upserts.push(normalizeCitaForSupabase(nextCita));
+    });
+  } else {
+    nextById.forEach((nextCita, id) => {
+      const previousCita = previousById.get(id);
+      if (!previousCita || !citasAreEqual(previousCita, nextCita)) {
+        upserts.push(normalizeCitaForSupabase(nextCita));
+      }
+    });
+  }
+
+  if (!forceAll) {
+    previousById.forEach((previousCita, id) => {
+      if (!nextById.has(id)) {
+        deletes.push(previousCita.id);
+      }
+    });
+  }
+
+  if (upserts.length > 0) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+      method: 'POST',
+      headers: {
+        ...getSupabaseHeaders(),
+        Prefer: 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify(upserts),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Supabase upsert failed: ${response.status}`);
+    }
+  }
+
+  if (deletes.length > 0) {
+    const deleteUrl = new URL(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`);
+    deleteUrl.searchParams.set('id', `in.(${deletes.join(',')})`);
+
+    const response = await fetch(deleteUrl.toString(), {
+      method: 'DELETE',
+      headers: getSupabaseHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Supabase delete failed: ${response.status}`);
+    }
+  }
+}
+
+async function hydrateCitasFromSupabase() {
+  if (citasHydrationPromise) {
+    return citasHydrationPromise;
+  }
+
+  citasHydrationPromise = (async () => {
+    if (!isSupabaseConfigured()) {
+      citasCache = readLocalCitas();
+      return citasCache;
+    }
+
+    const localCitas = readLocalCitas();
+
+    try {
+      const remoteCitas = await fetchCitasFromSupabase();
+      if (Array.isArray(remoteCitas)) {
+        const mergedCitas = mergeCitasById(remoteCitas, localCitas);
+        citasCache = mergedCitas;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(citasCache));
+
+        if (mergedCitas.length > remoteCitas.length) {
+          try {
+            await syncCitasToSupabase(mergedCitas, { forceAll: true });
+          } catch (syncError) {
+            console.error('No se pudieron migrar citas locales a Supabase:', syncError);
+          }
+        }
+      } else {
+        citasCache = localCitas;
+        if (citasCache.length > 0) {
+          try {
+            await syncCitasToSupabase(citasCache, { forceAll: true });
+          } catch (syncError) {
+            console.error('No se pudieron migrar citas locales a Supabase:', syncError);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('No se pudo cargar Supabase, usando caché local:', error);
+      citasCache = localCitas;
+    }
+
+    return citasCache;
+  })().finally(() => {
+    citasHydrationPromise = null;
+  });
+
+  return citasHydrationPromise;
+}
+
+async function refreshCitasFromSupabaseIfNeeded() {
+  if (!isSupabaseConfigured()) {
+    return;
+  }
+
+  const previousSnapshot = JSON.stringify(getCitas());
+  await hydrateCitasFromSupabase();
+  const currentSnapshot = JSON.stringify(getCitas());
+
+  if (previousSnapshot !== currentSnapshot) {
+    if (document.getElementById('adminCalendar')) {
+      renderAdminCalendar();
+    }
+
+    if (document.getElementById('agendarForm')) {
+      renderAvailableDates();
+      renderAvailableTimes();
+      updateEstimatedEnd();
+    }
+  }
 }
 
 function parseTimeToMinutes(timeValue) {
@@ -565,6 +869,11 @@ function getServiceDuration(serviceValue, selectedItems = []) {
   const definition = getServiceDefinition(serviceValue);
   if (!definition) {
     return 0;
+  }
+
+  if (serviceValue === 'otro') {
+    const total = selectedItems.reduce((t, item) => t + (Number(item.duration) || 0), 0);
+    return total > 0 ? total : 0;
   }
 
   if (serviceValue === 'diseno_color') {
@@ -1114,6 +1423,13 @@ if (agendarForm) {
   const horaFinInput = document.getElementById('horaFin');
   let disenoColorAccepted = false;
 
+  if (serviceSelect && !serviceSelect.querySelector('option[value="otro"]')) {
+    const otroOption = document.createElement('option');
+    otroOption.value = 'otro';
+    otroOption.textContent = 'Otro';
+    serviceSelect.appendChild(otroOption);
+  }
+
   if (typeof emailjs !== 'undefined' && emailjs.init) {
     emailjs.init('pgPhVWz5l64nPdsWO');
   }
@@ -1168,7 +1484,7 @@ if (agendarForm) {
 
   renderServiceFields(serviceSelect?.value || '');
 
-  agendarForm.addEventListener('submit', function (event) {
+  agendarForm.addEventListener('submit', async function (event) {
     event.preventDefault();
 
     const submitBtn = document.getElementById('submitBtn');
@@ -1182,6 +1498,8 @@ if (agendarForm) {
     const selectedItems = getSelectedItems(serviceValue);
     const serviceSummary = getSelectedServiceSummary(serviceValue);
     const appointmentDuration = getServiceDuration(serviceValue, selectedItems);
+
+    await hydrateCitasFromSupabase();
 
     if (serviceValue === 'unas_acrilicas_gelish') {
       const unasState = getUnasSelectionState();
@@ -1595,7 +1913,27 @@ window.eliminarCita = function eliminarCita(id) {
   renderAdminCalendar();
 };
 
-if (document.getElementById('adminCalendar')) {
-  renderAdminCalendar();
+async function bootstrapCitasData() {
+  await hydrateCitasFromSupabase();
+
+  if (document.getElementById('adminCalendar')) {
+    renderAdminCalendar();
+  }
+
+  if (document.getElementById('agendarForm')) {
+    renderAvailableDates();
+    renderAvailableTimes();
+    updateEstimatedEnd();
+  }
+
+  if ((document.getElementById('adminCalendar') || document.getElementById('agendarForm')) && !citasRefreshIntervalId) {
+    citasRefreshIntervalId = window.setInterval(() => {
+      void refreshCitasFromSupabaseIfNeeded().catch((error) => {
+        console.error('No se pudo refrescar citas desde Supabase:', error);
+      });
+    }, 30000);
+  }
 }
+
+void bootstrapCitasData();
 

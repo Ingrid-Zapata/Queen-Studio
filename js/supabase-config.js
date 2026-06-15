@@ -1,0 +1,2 @@
+window.QUEEN_STUDIO_SUPABASE_URL = window.QUEEN_STUDIO_SUPABASE_URL || 'https://kpkumnnboacefqnwuonc.supabase.co';
+window.QUEEN_STUDIO_SUPABASE_ANON_KEY = window.QUEEN_STUDIO_SUPABASE_ANON_KEY || 'sb_publishable_5KPr5fquReWJjL6sXUmHMQ_RN6xKVbZ';
