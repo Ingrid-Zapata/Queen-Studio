@@ -121,12 +121,12 @@ let estadosHydrationPromise = null;
 let citasRefreshIntervalId = null;
 
 const WORKING_HOURS = {
-  1: { start: '08:30', end: '17:00' },
-  2: { start: '08:30', end: '17:00' },
-  3: { start: '08:30', end: '17:00' },
-  4: { start: '08:30', end: '17:00' },
-  5: { start: '08:30', end: '17:00' },
-  6: { start: '10:00', end: '17:00' },
+  1: { start: '08:00', end: '18:00' },
+  2: { start: '08:00', end: '18:00' },
+  3: { start: '08:00', end: '18:00' },
+  4: { start: '08:00', end: '18:00' },
+  5: { start: '08:00', end: '18:00' },
+  6: { start: '08:00', end: '18:00' },
 };
 
 const SERVICE_DEFINITIONS = {
@@ -460,7 +460,7 @@ function isTombstonedCitaId(id) {
 function saveCitas(citas, options = {}) {
   const previousCache = Array.isArray(options.previousCache)
     ? options.previousCache.map((c) => ({ ...c }))
-    : (Array.isArray(citasCache) ? citasCache.map((c) => ({ ...c })) : readLocalCitas());
+    : readLocalCitas();
   const deletedIds = readDeletedCitaIds();
   citasCache = Array.isArray(citas)
     ? citas.filter((cita) => !deletedIds.has(String(cita.id))).map((cita) => ({ ...cita }))
@@ -685,6 +685,39 @@ async function syncCitasToSupabase(citas, options = {}) {
     return;
   }
 
+  // Mostrar indicador de sincronización en la UI
+  function showSyncStatus(show, text) {
+    try {
+      let el = document.getElementById('syncStatus');
+      if (!el && show) {
+        el = document.createElement('div');
+        el.id = 'syncStatus';
+        el.style.position = 'fixed';
+        el.style.right = '16px';
+        el.style.bottom = '16px';
+        el.style.padding = '8px 12px';
+        el.style.background = '#333';
+        el.style.color = '#fff';
+        el.style.borderRadius = '8px';
+        el.style.fontFamily = 'Montserrat, sans-serif';
+        el.style.zIndex = 9999;
+        document.body.appendChild(el);
+      }
+      if (el) {
+        el.textContent = text || 'Sincronizando...';
+        el.style.display = show ? 'block' : 'none';
+      }
+    } catch (e) {
+      // ignore DOM errors in non-browser contexts
+    }
+  }
+
+  showSyncStatus(true, 'Sincronizando citas...');
+
+  const maxAttempts = Number(options.maxAttempts) || 3;
+  let attempt = 0;
+  let lastError = null;
+
   const forceAll = Boolean(options.forceAll);
   const deletedIds = readDeletedCitaIds();
 
@@ -721,33 +754,53 @@ async function syncCitasToSupabase(citas, options = {}) {
     });
   }
 
-  if (upserts.length > 0) {
-    const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
-      method: 'POST',
-      headers: {
-        ...getSupabaseHeaders(),
-        Prefer: 'resolution=merge-duplicates,return=minimal',
-      },
-      body: JSON.stringify(upserts),
-    });
+  // Attempt upserts/deletes with retries
+  while (attempt < maxAttempts) {
+    attempt += 1;
+    try {
+      if (upserts.length > 0) {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+          method: 'POST',
+          headers: {
+            ...getSupabaseHeaders(),
+            Prefer: 'resolution=merge-duplicates,return=minimal',
+          },
+          body: JSON.stringify(upserts),
+        });
 
-    if (!response.ok) {
-      throw new Error(`Supabase upsert failed: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Supabase upsert failed: ${response.status}`);
+        }
+      }
+
+      if (deletes.length > 0) {
+        const deleteUrl = new URL(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`);
+        deleteUrl.searchParams.set('id', `in.(${deletes.join(',')})`);
+
+        const response = await fetch(deleteUrl.toString(), {
+          method: 'DELETE',
+          headers: getSupabaseHeaders(),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Supabase delete failed: ${response.status}`);
+        }
+      }
+
+      lastError = null;
+      break; // success
+    } catch (err) {
+      lastError = err;
+      const backoff = 500 * Math.pow(2, attempt - 1);
+      // small delay before retrying
+      await new Promise((resolve) => setTimeout(resolve, backoff));
     }
   }
 
-  if (deletes.length > 0) {
-    const deleteUrl = new URL(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`);
-    deleteUrl.searchParams.set('id', `in.(${deletes.join(',')})`);
+  showSyncStatus(false);
 
-    const response = await fetch(deleteUrl.toString(), {
-      method: 'DELETE',
-      headers: getSupabaseHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Supabase delete failed: ${response.status}`);
-    }
+  if (lastError) {
+    throw lastError;
   }
 }
 
@@ -1047,17 +1100,13 @@ function getAvailableStartTimes(dateValue, durationMinutes, serviceValue) {
 
   const available = [];
 
-  for (let slotStart = openingMinutes; slotStart + durationMinutes <= closingMinutes; slotStart += SLOT_STEP_MINUTES) {
+  for (let slotStart = openingMinutes; slotStart <= closingMinutes; slotStart += SLOT_STEP_MINUTES) {
     const slotEnd = slotStart + durationMinutes;
     const overlaps = bookedAppointments.some((appointment) => intervalsOverlap(slotStart, slotEnd, appointment.start, appointment.end));
 
     if (!overlaps) {
       available.push(minutesToTime(slotStart));
     }
-  }
-
-  if (serviceValue === 'diseno_color' && available.length > 0) {
-    return available.filter((timeValue) => timeValue === schedule.start);
   }
 
   return available;
@@ -1785,9 +1834,9 @@ if (agendarForm) {
       to_email: 'queenstudioym@gmail.com',
     };
 
-    const citasGuardadas = getCitas();
-    citasGuardadas.push(formData);
-    saveCitas(citasGuardadas);
+    const previousCitas = getCitas().map((cita) => ({ ...cita }));
+    const citasGuardadas = [...previousCitas, formData];
+    saveCitas(citasGuardadas, { previousCache: previousCitas });
 
     const sendPromise = typeof emailjs !== 'undefined' && emailjs.send
       ? emailjs.send('service_inzora', 'template_correo', emailParams)
@@ -1814,7 +1863,8 @@ if (agendarForm) {
       console.error('Error al enviar email:', error);
 
       if (messageDiv) {
-        const whatsappMsg = 'La cita se guardó, pero el correo no se envió. Te contactaremos por WhatsApp.';
+        const emailErrorDetail = error?.text || error?.message || 'Revisa la configuración de EmailJS.';
+        const whatsappMsg = `La cita se guardó, pero el correo no se envió. ${emailErrorDetail}`;
         const whatsappBtn = '<a href="https://wa.me/528446002354" target="_blank" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: #25D366; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">Contactar por WhatsApp</a>';
         showInlineMessage(messageDiv, 'error', 'No se pudo enviar', whatsappMsg);
         const errorMsg = messageDiv.querySelector('.inline-message-content');
