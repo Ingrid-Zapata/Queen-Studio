@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="Logo/logo4.png">
+  <title>Queen Studio - Panel Admin</title>
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/nav_rwd.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/agendar.css">
+  <link rel="stylesheet" href="css/admin-styles.css">
+  <link rel="stylesheet" href="css/whatsapp.css">
+  
+  <script defer src="js/supabase-config.js"></script>
+  <script defer src="js/script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="Logo/logo.png" alt="Queen Studio Logo">
+      </a>
+    </div>
+
+    <!-- Botón menú hamburguesa -->
+    <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+
+    <!-- Menú -->
+    <nav id="menu">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="servicios.html">Servicios</a></li>
+        <li><a href="productos.html">Productos</a></li>
+        <li><a href="index.html#agendar-cita">Agendar Cita</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- PANEL ADMIN -->
+  <section class="admin-page">
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 30px; position: relative; padding: 0 60px;">
+      <h2 style="font-family: 'Great Vibes', cursive; font-size: 3rem; color: #5d4e2e; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin: 0;">Panel de Citas</h2>
+      <button
+        id="logoutBtn"
+        style="padding: 10px 20px; border-radius: 10px; border: none; background: #c62828; color: white; cursor: pointer; font-weight: bold; font-family: 'Montserrat', sans-serif; position: absolute; right: 20px;"
+      >
+        🚪 Cerrar Sesión
+      </button>
+    </div>
+
+    <!-- Conteo Total -->
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="display: inline-block; padding: 15px 40px; border-radius: 15px; background: linear-gradient(135deg, #8e7d5a, #a89668); color: white; font-weight: bold; font-size: 1.3rem; font-family: 'Montserrat', sans-serif; box-shadow: 0 6px 20px rgba(142, 125, 90, 0.4);">
+        📋 Total de Citas: <span id="count-todas" style="font-size: 1.5rem;">0</span>
+      </div>
+    </div>
+
+    <!-- Calendario Navegable -->
+    <div style="max-width: 500px; margin: 0 auto 40px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <div class="calendar-legend" style="margin-bottom: 20px; justify-content: center;">
+        <span class="legend-item"><span class="legend-dot free"></span> Disponible</span>
+        <span class="legend-item"><span class="legend-dot busy"></span> Con cita(s)</span>
+        <span class="legend-item"><span class="legend-dot closed"></span> Pasado</span>
+      </div>
+      <div id="adminCalendar"></div>
+    </div>
+
+    <!-- Lista de Citas Agendadas -->
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h3 style="color: #5d4e2e; text-align: center; margin-bottom: 20px;">Citas Agendadas</h3>
+      <div id="citasContainer"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Queen Studio - Todos los derechos reservados</p>
+  </footer>
+
+  <!-- BOTÓN FLOTANTE -->
+  <a href="https://wa.me/528446002354" target="_blank" id="whatsapp-float">
+    <img src="Logo/whats_logo.PNG" alt="WhatsApp" />
+  </a>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+/* ===================== RESET ===================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: rgb(25, 45, 23);
+}
+
+
+/* ===================== HEADER ===================== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(
+    135deg,
+    rgba(21, 28, 21, 0.85),
+    rgba(36, 69, 40, 0.8),
+    rgba(54, 90, 52, 0.8),
+    rgba(44, 74, 43, 0.8),
+    rgba(25, 59, 28, 0.8),
+    rgba(19, 32, 20, 0.85)
+  );
+  box-shadow: 0 0 25px rgba(3, 14, 4, 0.8);
+  border-bottom: 2px solid rgba(236, 212, 148, 0.251);
+}
+
+.logo img {
+  background: radial-gradient(circle, rgba(11,45,11,0.9) 20%, rgb(0,0,0) 80%, rgba(252,197,79,0.7) 100%);
+  border-radius: 1000px;
+  box-shadow: 0 0 40px rgb(114, 99, 67);
+  height: 65px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #958e40;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav a:hover, nav a.active {
+  color: #f0dbbd;
+  border-bottom: 2px solid rgb(247, 236, 166);
+}
+
+/* ===================== FOOTER ===================== */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(21, 28, 21, 0.85),
+    rgba(26, 49, 28, 0.8),
+    rgba(36, 59, 35, 0.8),
+    rgba(36, 61, 36, 0.8),
+    rgba(23, 49, 25, 0.8),
+    rgba(19, 32, 20, 0.85)
+  );
+  box-shadow: 0 0 25px rgba(52, 46, 34, 0.8);
+  color: #988458;
+}
+
+/* ===================== MENÚ HAMBURGUESA ===================== */
+.menu-toggle {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #635527;
+  z-index: 2000;
+  position: relative;
+}
+
+/* ================ CONTACTO =================== */
+.contacto-info {
+  background: linear-gradient(
+    135deg,
+    rgba(8, 25, 8, 0.85),
+    rgba(13, 41, 14, 0.85),
+    rgba(31, 54, 31, 0.8),
+    rgba(31, 54, 31, 0.8),
+    rgba(13, 41, 14, 0.85),
+     rgba(8, 25, 8, 0.85)
+  );
+
+  padding: 15px 8%;
+  text-align: center;
+  color: #ae9645;
+  font-family: 'Raleway', sans-serif;
+  box-shadow: 0 0 15px rgba(89, 86, 81, 0.6);
+}
+
+.contacto-info h2 {
+  text-align: center;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  margin-bottom: 15px;
+
+  /* Dorado brillante */
+  background: linear-gradient(
+    90deg,
+    #8c6b2f,
+    #d2c99c,
+    #a48e46,
+    #e8deb0,
+    #8c6b2f
+  );
+
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: brilloDorado 5s linear infinite;
+}
+
+/* Contenedor centrado en columna */
+.contacto-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Listas apiladas */
+.contacto-left,
+.contacto-right {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Líneas más compactas */
+.contacto-info li {
+  margin-bottom: 8px;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+/* Enlaces elegantes */
+.contacto-info a {
+  color: #f7f0ab;
+  font-weight: bold;
+}
+
+.contacto-info a:hover {
+  text-decoration: underline;
+  color: #857115;
+}

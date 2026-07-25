@@ -1,0 +1,165 @@
+/* ===================== HERO ===================== */
+.hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: #0f0f0f;
+  color: #fff;
+}
+
+.hero-banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-content {
+  position: absolute;
+  inset: 0; /* ocupa todo el hero */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+  padding: 80px 20px;
+  text-align: center;
+
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.34),
+    rgba(0, 0, 0, 0.18)
+  );
+
+  color: #fff;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.mobile-hero-service {
+  display: none;
+  text-align: center;
+  padding: 14px 20px 0;
+}
+
+.btn {
+  padding: 12px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: 0.3s;
+    display: inline-flex;     
+  align-items: center;       
+  justify-content: center;
+  
+}
+
+.btn:hover {
+  background: rgb(240, 227, 190);
+  color: #e2d5c3;
+}
+
+
+.btn-secondary-hero {
+  min-width: 155px;
+  text-align: center;
+  border: 1px solid rgba(143, 131, 90, 0.82);
+  background: rgba(172, 153, 103, 0.712);
+  color: #142e06;
+  font-family:  'Playfair Display', serif;
+  font-weight: 1000;
+
+}
+
+.btn-primary-hero {
+  min-width: 180px;
+  min-height: 50px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family:  'Playfair Display', serif;
+  font-weight: 1000;
+
+  background: linear-gradient(
+    90deg,
+    rgba(180, 140, 40, 0.498) 0%,
+    rgba(210, 170, 60, 0.413) 15%,
+    rgba(220, 200, 136, 0.806) 30%,
+    rgba(194, 181, 136, 0.886) 50%,
+    rgba(214, 197, 143, 0.792) 70%,
+    rgba(210, 170, 60, 0.422) 85%,
+    rgba(180, 140, 40, 0.525) 100%
+  );
+
+  background-size: 200% auto;
+  animation: brilloDorado 3s linear infinite;
+
+  color: #072305;
+  border-radius: 30px;
+  border: 1px solid rgba(73, 60, 18, 0.82);
+  box-shadow: 0 0 10px rgba(25, 24, 21, 0.7);
+}
+
+@keyframes brilloDorado {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+
+.btn-secondary-hero:hover,
+.btn-primary-hero:hover {
+  background: rgb(169, 150, 97);
+  color: #fff;
+}
+
+
+
+.hero-logo {
+  width: 140px;
+  height: auto;
+  display: block;
+  margin-bottom: 0;
+
+  background: radial-gradient(circle,
+    rgba(11,45,11,0.9) 20%,
+    rgb(0,0,0) 80%,
+    rgba(252,197,79,0.7) 100%
+  );
+
+  border-radius: 1000px;
+  box-shadow: 0 0 40px rgba(252, 197, 79, 0.5);
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-family: 'Great Vibes', cursive;
+  margin: 0;
+  margin-top: 5px; 
+
+  /* Gradiente en el texto */
+  background: linear-gradient(
+    20deg,
+    rgb(21, 53, 21),
+    rgb(24, 46, 17),
+    rgb(13, 42, 7)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Sombra opcional para destacar */
+  text-shadow: 0 0 4px rgba(38, 140, 50, 0);
+}
+
+

@@ -1,0 +1,109 @@
+/* ===================== SOBRE NOSOTROS ===================== */
+.about {
+  position: relative;
+
+  background: linear-gradient(
+    135deg,
+    rgba(8, 25, 8, 0.85),
+    rgba(13, 41, 14, 0.85),
+    rgba(31, 54, 31, 0.8),
+    rgba(31, 54, 31, 0.8),
+    rgba(13, 41, 14, 0.85),
+     rgba(8, 25, 8, 0.85)
+  );
+
+  background-size: 200% 200%;
+  animation: shimmerMove 10s ease-in-out infinite;
+
+  padding: 60px 10%;
+  color: #fefefe;
+  text-align: center;
+
+  border-top: 2px solid rgba(255, 223, 150, 0.4);
+  border-bottom: 2px solid rgba(255, 223, 150, 0.4);
+
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.5);
+
+  overflow: hidden;
+}
+
+@keyframes shimmerMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+.about h2 {
+  text-align: center;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+
+  /* Dorado brillante */
+  background: linear-gradient(
+    90deg,
+    #8c6b2f,
+    #d2c99c,
+    #a48e46,
+    #e8deb0,
+    #8c6b2f
+  );
+
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: brilloDorado 5s linear infinite;
+}
+
+
+@keyframes brilloDorado {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.about-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+.about-image {
+  order: 2;
+}
+
+.about-image img {
+  width: 420px;
+  border-radius: 20px;
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.7);
+  transition: transform 0.3s ease;
+}
+
+.about-image img:hover {
+  transform: scale(1.05);
+}
+
+.about-text {
+  flex: 1;
+  text-align: center;
+  order: 1;
+}
+
+.about-text p {
+  text-align: justify;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  color: #d8d294;
+  line-height: 1.6;
+}

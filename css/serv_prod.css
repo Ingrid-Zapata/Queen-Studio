@@ -1,0 +1,467 @@
+/* ===================== PRODUCTOS ===================== */
+.productos-page {
+  position: relative;
+  text-align: center;
+  padding: 60px 20px;
+    background: linear-gradient(
+    135deg,
+    rgba(8, 25, 8, 0.85),
+    rgba(5, 18, 6, 0.85),
+    rgba(49, 79, 49, 0.8),
+    rgba(19, 39, 19, 0.8),
+    rgba(9, 39, 10, 0.85),
+     rgba(8, 25, 8, 0.85)
+  );
+
+  background-size: 200% 200%;
+  animation: shimmerMove 10s ease-in-out infinite;
+  border-top: 2px solid rgba(255, 223, 150, 0.4);
+  border-bottom: 2px solid rgba(255, 223, 150, 0.4);
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.4);
+  color: #f4e3b2;
+  min-height: 80vh;
+}
+
+.productos-page h2 {
+  text-align: center;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+
+  /* Dorado brillante */
+  background: linear-gradient(
+    90deg,
+    #8c6b2f,
+    #d2c99cce,
+    #a48e46da,
+    #e8deb0,
+    #8c6b2f
+  );
+  
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 10px rgba(7, 45, 17, 0.6);
+  animation: brilloDorado 5s linear infinite;
+}
+
+
+
+
+.productos-intro {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  color: #e8ddb9;
+  margin-bottom: 40px;
+}
+
+.productos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.producto-card {
+  background: linear-gradient(
+    135deg,
+    #fff4c4 0%,   /* luz suave */
+    #bca86c 20%,  /* dorado claro */
+    #f3e6c2 35%,  /* dorado vivo */
+    #fafaf9 50%,  /* brillo máximo */
+    #d5c082 65%,
+    #bca86c 80%,
+    #fff4c4 100%
+  );
+
+  background-size: 250% 250%;
+  animation: shimmerMove 8s ease-in-out infinite;
+  border: 2px solid #927c49;
+  border-radius: 15px;
+  padding: 20px;
+  transition: all 0.3s ease;
+
+}
+
+.producto-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(172, 150, 98, 0.84);
+}
+
+.producto-card img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border: 2px solid rgba(238, 223, 172, 0.5);
+}
+
+.producto-placeholder {
+  width: 100%;
+  aspect-ratio: 1/1;
+  background: linear-gradient(135deg, rgba(251, 235, 197, 0.3), rgba(171, 151, 104, 0.3));
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  font-size: 3rem;
+  color: rgba(255, 223, 150, 0.6);
+}
+
+.producto-placeholder p:last-child {
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 10px;
+}
+
+.producto-card h3 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.5rem;
+  color: #11351c;
+  margin-bottom: 10px;
+}
+
+.producto-desc {
+  font-family: 'Montserrat', sans-serif;
+  color: #1b3523;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.btn-producto {
+  display: inline-block;
+  background: linear-gradient(135deg, rgb(238, 223, 172), rgba(251, 235, 197, 0.886), rgb(238, 223, 172));
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  transition: 0.3s;
+}
+
+.btn-producto:hover {
+  background: #8e7d5a;
+  color: #fff;
+}
+
+@keyframes brilloDorado {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* ===================== SERVICIOS ===================== */
+.servicios-page {
+  position: relative;
+  text-align: center;
+  padding: 60px 20px;
+
+  background: linear-gradient(
+    135deg,
+    #fff4c4 0%,   /* luz suave */
+    #bca86c 20%,  /* dorado claro */
+    #f3e6c2 35%,  /* dorado vivo */
+    #fafaf9 50%,  /* brillo máximo */
+    #d5c082 65%,
+    #bca86c 80%,
+    #fff4c4 100%
+  );
+
+  background-size: 250% 250%;
+  animation: shimmerMove 8s ease-in-out infinite;
+
+  border-top: 2px solid rgba(255, 223, 150, 0.4);
+  border-bottom: 2px solid rgba(255, 223, 150, 0.4);
+  box-shadow: 0 0 25px rgba(255, 223, 150, 0.4);
+
+  color: #6c5b2c;
+  overflow: hidden;
+}
+
+
+
+.servicios-page h2 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.8rem;
+  background: linear-gradient(
+    90deg,
+    #234a23,
+    #031401,
+    #051a05,
+    #121412f9,
+    #012201
+  );
+
+  background-size: 260% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: brilloDorado 9s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes brilloDorado {
+  to {
+    background-position: 200% center;
+  }
+
+}
+.servicios-page h3 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.7rem;
+  color:  rgb(188, 166, 100);
+  margin-bottom: 10px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.card {
+    background: linear-gradient(
+    135deg,
+    #152515,
+    #283d1d,
+    #152515
+  );
+  border: 2px solid rgb(9, 39, 11);
+  border-radius: 15px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s ease;
+  align-items: center;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(20, 45, 14, 0.82);
+}
+
+/* ==== Slider ==== */
+.slider {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.slider .slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.slider .slide.active {
+  opacity: 1;
+}
+
+/* ==== Texto y botones ==== */ 
+.ver-mas {
+  background: linear-gradient(
+    135deg,
+   rgb(197, 178, 80),
+    rgba(251, 235, 197, 0.886),
+    rgb(143, 126, 70)
+  );
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: 0.3s;
+  font-family: 'Montserrat', sans-serif;
+  width: fit-content;
+  display: inline-block;
+}
+
+.ver-mas:hover {
+  background: #8e7d5a;
+  color: #fff;
+}
+
+.ver-mas-producto {
+    background: linear-gradient(
+    135deg,
+   rgb(30, 54, 31),
+    rgb(43, 66, 43),
+    rgb(6, 32, 6)
+  );
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: 0.3s;
+  font-family: 'Montserrat', sans-serif;
+  width: fit-content;
+  display: inline-block;
+  color: #b2f4ba;
+}
+
+.ver-mas-producto:hover {
+  background: #163c22;
+  color: #f6e7b8;
+}
+
+/* ==== Texto e información dentro de la tarjeta ==== */
+.info {
+  max-height: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: block;
+  background: transparent;
+  border-top: 2px solid rgba(238, 223, 172, 0.3);
+  transition: max-height 0.6s ease, padding 0.3s ease;
+  margin-top: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.producto-info {
+  max-height: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: block;
+  background: transparent;
+  border-top: 2px solid rgba(29, 78, 44, 0.22);
+  transition: max-height 0.6s ease, padding 0.3s ease;
+  margin-top: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Cuando la tarjeta se expande */
+.card.active .info {
+  max-height: 220px;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  padding: 10px 0;
+}
+
+.producto-card.active .producto-info {
+  max-height: 220px;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  padding: 10px 0;
+}
+
+/* Scrollbar elegante para tarjetas de servicios */
+.info {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(238, 223, 172, 0.8) rgba(11, 33, 11, 0.6);
+}
+
+.info::-webkit-scrollbar {
+  width: 7px;
+}
+
+.info::-webkit-scrollbar-thumb {
+  background: rgba(238, 223, 172, 0.9);
+  border-radius: 999px;
+  border: 2px solid rgba(17, 33, 17, 0.2);
+}
+
+.info::-webkit-scrollbar-thumb:hover {
+  background: rgba(238, 223, 172, 1);
+}
+
+.info::-webkit-scrollbar-track {
+  background: rgba(17, 33, 17, 0.55);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(238, 223, 172, 0.12);
+}
+
+/* Scrollbar elegante para tarjetas de productos */
+.producto-info {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(238, 223, 172, 0.9) rgba(17, 33, 17, 0.45);
+}
+
+.producto-info::-webkit-scrollbar {
+  width: 8px;
+}
+
+.producto-info::-webkit-scrollbar-thumb {
+  background: rgba(238, 223, 172, 0.9);
+  border-radius: 999px;
+  border: 2px solid rgba(17, 33, 17, 0.2);
+}
+
+.producto-info::-webkit-scrollbar-thumb:hover {
+  background: rgba(238, 223, 172, 1);
+}
+
+.producto-info::-webkit-scrollbar-track {
+  background: rgba(17, 33, 17, 0.65);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(238, 223, 172, 0.14);
+}
+
+/* Texto interno */
+.info p {
+  color: rgb(210, 196, 152);
+  margin-bottom: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: left;
+  font-family: 'playfair display', sans-serif;
+}
+
+.producto-info p {
+  color: #08200f;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: left;
+  font-family: 'playfair display', sans-serif;
+}
+
+/* Botón de cotizar */
+.btn-cotizar {
+  display: inline-block;
+  background: #1c3e28;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+.btn-cotizar:hover {
+  background: #314d31;
+}
+
+.productos-page .btn-cotizar {
+  background: #1d4e2c;
+  color: #f4e3b2;
+}
+
+.productos-page .btn-cotizar:hover {
+  background: #153a21;
+}
+
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

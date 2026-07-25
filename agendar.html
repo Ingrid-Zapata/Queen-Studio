@@ -1,0 +1,106 @@
+<!-- AGENDA CITA -->
+<section class="agendar-page" id="agendar-cita">
+  <h2>Agenda tu Cita</h2>
+
+  <div id="message" style="display: none;"></div>
+
+  <form class="agendar-form" id="agendarForm">
+    <div class="form-group">
+      <label for="nombre">Nombre completo *</label>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        required
+        placeholder="Tu nombre"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono / WhatsApp *</label>
+      <input
+        type="tel"
+        id="telefono"
+        name="telefono"
+        required
+        placeholder="Ej: 8441234567"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="multiServiceCount">¿Cuántos servicios deseas agendar?</label>
+      <select id="multiServiceCount" name="multiServiceCount">
+        <option value="1">1 servicio</option>
+        <option value="2">2 servicios</option>
+        <option value="3">3 servicios</option>
+        <option value="4">4 servicios</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="servicio">Servicio *</label>
+      <select id="servicio" name="servicio" required>
+        <option value="">Selecciona un servicio</option>
+          <option value="pestanas_cejas">Pestañas y Cejas</option>
+          <option value="diseno_color">Diseño de Color</option>
+          <option value="alisados_tratamientos">Alisados, Alaciados y Tratamientos</option>
+          <option value="base_permanente">Bases Permanentes</option>
+          <option value="unas_acrilicas_gelish">Uñas</option>
+          <option value="maquillaje_peinados">Maquillaje y Peinados</option>
+      </select>
+    </div>
+
+      <div id="serviceFields"></div>
+
+    <div class="form-group">
+      <label for="fecha">Fecha preferida *</label>
+      <div id="fechaCalendar" class="fecha-calendar" style="display: none;">
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <input type="hidden" id="fecha" name="fecha" required />
+      </div>
+      <div id="fechaFallback" style="padding: 10px; background: #f0f0f0; border-radius: 4px; color: #666;">
+        Selecciona un servicio primero
+      </div>
+    </div>
+
+    <div class="form-group">
+        <label for="hora">Hora de inicio *</label>
+        <select id="hora" name="hora" required>
+          <option value="">Selecciona una fecha primero</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="horaFin">Hora de finalización estimada *</label>
+        <input type="text" id="horaFin" name="horaFin" readonly placeholder="Se calculará automáticamente" />
+      </div>
+
+      <div id="serviceNotice" class="info-mensaje" style="display:none;"></div>
+
+      <div id="multiBookingSummary" style="display:none; margin-top:10px;"></div>
+
+      <div class="info-mensaje">
+        <p>📞 Nos pondremos en contacto contigo para confirmar tu cita y cotizar el precio del servicio.</p>
+    </div>
+
+    <div class="form-group">
+      <label for="notas">Notas adicionales (opcional)</label>
+      <textarea
+        id="notas"
+        name="notas"
+        placeholder="Alguna especificación o detalle importante"
+      ></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit" id="submitBtn">
+      Agendar Cita
+    </button>
+  </form>
+
+  <p style="text-align: center; margin-top: 20px; font-family: 'Montserrat', sans-serif; color: #4a463f;">
+    También puedes contactarnos por 
+    <a href="https://wa.me/528446002354" target="_blank" style="color: #7b5b1f; font-weight: bold;">
+      WhatsApp
+    </a>
+  </p>
+</section>

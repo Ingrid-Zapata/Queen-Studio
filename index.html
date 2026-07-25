@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="Logo/logo4.png">
+  <title>Queen Studio - Inicio</title>
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/nav_rwd.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/about.css">
+  <link rel="stylesheet" href="css/agendar.css">
+  <link rel="stylesheet" href="css/serv_prod.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/whatsapp.css">
+
+  <!-- EmailJS para envío de correos -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script defer src="js/supabase-config.js"></script>
+  <script defer src="js/script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&family=Great+Vibes&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script&family=Sacramento&family=Parisienne&family=Allura&family=Italianno&family=Pinyon+Script&family=Cinzel:wght@400;700&family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;700&family=Prata&family=Raleway:wght@400;700&family=Montserrat:wght@400;700&family=Josefin+Sans:wght@400;700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet"> 
+  <!-- Open Graph --> 
+   <meta property="og:title" content="Queen Studio"> 
+   <meta property="og:description" content="Sitio web oficial de Queen Studio - Porque toda reina merece un cuidado real."> 
+   <meta property="og:image" content="https://queen-studio.netlify.app/Logo/logo2.png"> 
+   <meta property="og:url" content="https://queen-studio.netlify.app"> 
+   <meta property="og:type" content="website"> 
+   <!-- Twitter Card --> 
+    <meta name="twitter:card" content="summary_large_image"> 
+    <meta name="twitter:title" content="Queen Studio"> 
+    <meta name="twitter:description" content="Sitio web oficial de Queen Studio - Porque toda reina merece un cuidado real."> 
+    <meta name="twitter:image" content="https://queen-studio.netlify.app/Logo/logo2.png">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <a href="index.html">
+        <img src="Logo/logo.png" alt="Queen Studio Logo">
+      </a>
+    </div>
+
+    <!-- Botón menú hamburguesa -->
+    <div class="menu-toggle" id="menu-toggle">
+      &#9776; <!-- icono 3 barras -->
+    </div>
+
+    <!-- Menú -->
+    <nav id="menu">
+      <ul>
+        <li><a href="index.html" class="active">Inicio</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#productos">Productos</a></li>
+        <li><a href="#agendar-cita">Agendar Cita</a></li>
+        <li><a href="login.html">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Fondo oscuro del panel -->
+  <div id="overlay"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="Logo/portada.jpeg" alt="Portada de Queen Studio" class="hero-banner">
+    <div class="hero-content">
+      <img src="Logo/logo.png" alt="Queen Studio Logo" class="hero-logo">
+      <h1>Porque toda reina merece un cuidado real</h1>
+      <div class="hero-buttons">
+        <a href="#agendar-cita" class="btn btn-primary-hero" >Agendar Cita</a>
+        <a href="#servicios" class="btn btn-secondary-hero">Servicios</a>
+        <a href="#productos" class="btn btn-secondary-hero">Productos</a>
+      </div>
+    </div>
+  </section>
+
+<!-- SOBRE NOSOTROS -->
+<section class="about">
+  <h2>Sobre Queen Studio</h2>
+  <div class="about-container">
+    <div class="about-text">
+      <p>
+        Fundado en 2021, Queen Studio nace como un proyecto dedicado al cuidado y la belleza integral. 
+        Ofrecemos servicios profesionales de cabello, uñas, pestañas, cejas y tratamientos personalizados, 
+        utilizando técnicas innovadoras para brindar resultados de alta calidad y una experiencia única para cada clienta.
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- SERVICIOS (se carga dinámicamente desde servicios.html) -->
+<div id="servicios-container"></div>
+
+<!-- PRODUCTOS (se carga dinámicamente desde productos.html) -->
+<div id="productos-container"></div>
+
+
+<!-- AGENDAR CITA -->
+<div id="agendar-container"></div>
+
+
+
+
+
+<!-- FOOTER -->
+<footer>
+    <section class="contacto-info">
+    <h2>Contáctanos con un click</h2>
+    <div class="contacto-grid">
+      <ul class="contacto-left">
+        <li><strong>Facebook:</strong> <a href="https://www.facebook.com/share/17FSjx4p7i/" target="_blank">Queen Studio</a></li>
+        <li><strong>Tik Tok:</strong> <a href="https://www.tiktok.com/@queenstudioym?is_from_webapp=1&sender_device=pc" target="_blank">@queenstudioym</a></li>
+        <li><strong>Instagram:</strong> <a href="https://instagram.com/QueenStudioym" target="_blank">@queenstudioym</a></li>
+        <li><strong>Correo:</strong> <a href="mailto:queenstudioym@gmail.com">queenstudioym@gmail.com</a></li>
+        <li><strong>Ubicación:</strong> <a href="https://maps.app.goo.gl/ENa6L3eLkV9u6eCb8" target="_blank">Lomas de San Francisco, Loma de Altamira 25015, Saltillo, Coahuila, México</a></li>
+      </ul>
+    </div>
+    </section>
+    <br>
+    <p>© 2025 Queen Studio - Todos los derechos reservados</p>
+</footer>
+
+  <!-- BOTÓN FLOTANTE -->
+<a href="https://wa.me/528446002354" target="_blank" id="whatsapp-float">
+  <img src="Logo/whats_logo.PNG" alt="WhatsApp" />
+</a>
+
+
+
+</body>
+</html>
