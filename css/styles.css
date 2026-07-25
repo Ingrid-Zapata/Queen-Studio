@@ -196,20 +196,19 @@
   }
 
   .hero-buttons {
-    width: min(560px, 100%);
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: nowrap;
+    display: flex;
+    flex-direction: column; /* 👈 CLAVE */
+    align-items: center;
+    width: 100%;
+    gap: 10px;
   }
 
   .hero .btn-primary-hero,
   .hero .btn-secondary-hero {
-    min-width: 0;
-    width: calc((100% - 16px) / 3);
-    padding: 10px 8px;
+    width: 100%; /* 👈 que ocupen todo */
+    max-width: 320px; /* opcional para que no se vean gigantes */
+    padding: 12px;
     font-size: 1rem;
-    margin-bottom: 0;
-    white-space: nowrap;
   }
 
   .about {
