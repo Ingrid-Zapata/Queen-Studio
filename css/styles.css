@@ -175,33 +175,41 @@
   }
 
   .hero-content {
-    padding: 44px 20px 28px;
-    gap: 5px;
+    padding: 160px 16px 30px;
+    gap: 10px;
   }
 
   .hero-logo {
     position: absolute;
-    top: 20px;
+    top: 26px;
     left: 50%;
     transform: translateX(-50%);
+    width: 190px;
+    max-width: 58vw;
   }
 
   .hero h1 {
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-    padding: 0 10px;
-    line-height: 1.3;
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+    padding: 0 8px;
+    line-height: 1.18;
   }
 
   .hero-buttons {
-    gap: 10px;
+    width: min(560px, 100%);
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: nowrap;
   }
 
   .hero .btn-primary-hero,
   .hero .btn-secondary-hero {
-    padding: 10px 25px;
-    font-size: 0.95rem;
-    margin-bottom: 10px;
+    min-width: 0;
+    width: calc((100% - 16px) / 3);
+    padding: 10px 8px;
+    font-size: 1rem;
+    margin-bottom: 0;
+    white-space: nowrap;
   }
 
   .about {
@@ -243,25 +251,28 @@
 /* ===================== RESPONSIVE EXTRA PEQUEÑO (móviles pequeños) ===================== */
 @media (max-width: 480px) {
   .hero-content {
-    padding: 34px 15px 22px;
-    gap: 10px;
+    padding: 148px 12px 24px;
+    gap: 8px;
   }
 
   .hero-logo {
-    max-width: 120px;
+    width: 172px;
+    max-width: 68vw;
   }
 
   .hero h1 {
-    font-size: 1.5rem;
+    font-size: 2.08rem;
+    line-height: 1.15;
+    margin-bottom: 8px;
   }
 
   .hero .btn-primary-hero,
   .hero .btn-secondary-hero,
   .mobile-hero-service .btn-primary-hero,
   .agenda-promo .btn-primary-hero {
-    padding: 8px 20px;
-    font-size: 0.85rem;
-    margin-bottom: 5px;
+    padding: 9px 6px;
+    font-size: 0.9rem;
+    margin-bottom: 0;
   }
 
   .agenda-promo {
