@@ -45,6 +45,11 @@ A continuación está la plantilla HTML que debes pegar como *Content* en tu pla
       </tr>
     </table>
 
+    <div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
+      <p style="margin: 0; font-weight: bold; color: #333;">🧾 Servicios del pedido ({{numero_servicios}}):</p>
+      <div style="margin: 10px 0 0 0; color: #666; white-space: pre-line;">{{resumen_servicios}}</div>
+    </div>
+
     {{#notas}}
     <div style="margin-top: 20px; padding: 15px; background-color: #fff9e6; border-left: 4px solid #b99654; border-radius: 5px;">
       <p style="margin: 0; font-weight: bold; color: #333;">📝 Notas Adicionales:</p>
@@ -57,10 +62,6 @@ A continuación está la plantilla HTML que debes pegar como *Content* en tu pla
       <a href="{{whatsapp_prefill}}" style="display: inline-block; background: #25D366; color: white; padding: 15px 18px; text-decoration: none; border-radius: 25px; font-weight: bold; margin-right:8px;">💬 Contactar por WhatsApp (cliente)</a>
       <!-- Botón para agregar la cita al calendario (descarga .ics o abre Google Calendar) -->
       <a href="{{invite_url}}" style="display: inline-block; background: #b99654; color: black; padding: 15px 18px; text-decoration: none; border-radius: 25px; font-weight: bold;">📅 Agregar al calendario</a>
-    </div>
-    <div style="text-align: center; margin-top: 10px; color: #555; font-size: 0.9rem; line-height: 1.4;">
-      Si el botón no funciona, usa este enlace directo:<br>
-      <a href="{{invite_url}}" style="color: #5d4e2e; word-break: break-all;">{{invite_url}}</a>
     </div>
         <div style="text-align: center; margin-top: 30px;">
       <a href="https://queenstudioym.com/admin.html" style="display: inline-block; background: #b99654; color: black; padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">Ir a la pagina</a>
@@ -75,7 +76,11 @@ A continuación está la plantilla HTML que debes pegar como *Content* en tu pla
 ```
 
 ## Notas para el template
- - Mantén exactamente las llaves `{{nombre}}`, `{{telefono}}`, `{{servicio}}`, `{{fecha}}`, `{{hora}}`, `{{hora_fin}}`, `{{duracion}}`, `{{notas}}`.
+ - Mantén exactamente las llaves `{{nombre}}`, `{{telefono}}`, `{{servicio}}`, `{{fecha}}`, `{{hora}}`, `{{hora_fin}}`, `{{duracion}}`, `{{notas}}`, `{{numero_servicios}}`, `{{resumen_servicios}}`.
+ - `{{servicio}}` incluye lo elegido dentro del servicio (ej. "Otro: Tinte de cabello, Corte de cabello").
+ - `{{hora}}` y `{{hora_fin}}` llegan en formato 24 horas (ej. 14:00 y 17:30).
+ - `{{resumen_servicios}}` lista todas las citas del pedido, una por línea; por eso lleva `white-space: pre-line`.
+ - `{{invite_url}}` solo se usa como enlace del botón "Agregar al calendario", no se muestra como texto.
  - Nota: el mensaje automático personalizado ahora se envía desde el panel administrativo vía el botón de WhatsApp (no se incluye automáticamente en el correo). Si necesitas incluirlo en el email, dímelo y lo re-agrego explícitamente.
 
 ## Pasos rápidos (si no los tienes ya)

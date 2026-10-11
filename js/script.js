@@ -146,61 +146,62 @@ function crearCarrusel(idSlider, carpeta, total) {
     return;
   }
 
+  // Esta función se llama más de una vez; reconstruir dejaba el slider sin slide activo.
+  if (slider.dataset.sliderBuilt === 'true') {
+    return;
+  }
+  slider.dataset.sliderBuilt = 'true';
   slider.innerHTML = '';
 
-const extensiones = ['jpg', 'jpeg', 'png'];
+  const extensiones = ['jpg', 'jpeg', 'png'];
 
-for (let imageIndex = 1; imageIndex <= total; imageIndex++) {
-  let extIndex = 0;
-
-  const image = document.createElement('img');
-  image.classList.add('slide');
-  image.alt = `Imagen ${imageIndex}`;
-
-  function cargarImagen() {
-    if (extIndex >= extensiones.length) {
-      image.remove(); // no encontró ninguna versión
-      return;
+  const showFirstIfNone = () => {
+    if (!slider.querySelector('.slide.active')) {
+      const first = slider.querySelector('.slide');
+      if (first) {
+        first.classList.add('active');
+      }
     }
-
-    image.src = `${carpeta}${imageIndex}.${extensiones[extIndex]}`;
-  }
-
-  image.onerror = () => {
-    extIndex++;
-    cargarImagen();
   };
 
-  cargarImagen();
-  slider.appendChild(image);
-}
+  for (let imageIndex = 1; imageIndex <= total; imageIndex++) {
+    let extIndex = 0;
 
-  const activateSlider = () => {
-    if (slider.dataset.sliderActive === 'true') {
-      return;
-    }
+    const image = document.createElement('img');
+    image.classList.add('slide');
+    image.alt = `Imagen ${imageIndex}`;
 
-    const slides = slider.querySelectorAll('.slide');
+    const cargarImagen = () => {
+      if (extIndex >= extensiones.length) {
+        image.remove(); // no encontró ninguna versión
+        showFirstIfNone();
+        return;
+      }
+
+      image.src = `${carpeta}${imageIndex}.${extensiones[extIndex]}`;
+    };
+
+    image.onload = showFirstIfNone;
+    image.onerror = () => {
+      extIndex++;
+      cargarImagen();
+    };
+
+    slider.appendChild(image);
+    cargarImagen();
+  }
+
+  // Los slides se consultan en cada ciclo porque algunos se eliminan al fallar la carga.
+  setInterval(() => {
+    const slides = Array.from(slider.querySelectorAll('.slide'));
     if (slides.length === 0) {
       return;
     }
 
-    slider.dataset.sliderActive = 'true';
-    let current = 0;
-    slides[current].classList.add('active');
-
-    setInterval(() => {
-      slides[current].classList.remove('active');
-      current = (current + 1) % slides.length;
-      slides[current].classList.add('active');
-    }, 3000);
-  };
-
-  if (document.readyState === 'complete') {
-    activateSlider();
-  } else {
-    window.addEventListener('load', activateSlider, { once: true });
-  }
+    const currentIndex = slides.findIndex((slide) => slide.classList.contains('active'));
+    slides.forEach((slide) => slide.classList.remove('active'));
+    slides[(currentIndex + 1) % slides.length].classList.add('active');
+  }, 3000);
 }
 
 function initServiceImageCarousels() {
@@ -243,13 +244,20 @@ let citasRefreshIntervalId = null;
 const ATTENDED_STATE = 'atendida';
 const HIDDEN_APPOINTMENT_STATES = ['cancelada', ATTENDED_STATE];
 
+// start/end: primer y último inicio permitido; maxEnd: la cita no puede terminar después (null = sin límite)
+const WEEKDAY_SCHEDULE = {
+  ranges: [
+    { start: '08:00', end: '09:00', maxEnd: '12:00' },
+    { start: '14:00', end: '17:30', maxEnd: '18:00' },
+  ],
+};
 const WORKING_HOURS = {
-  1: { start: '12:00', end: '18:00' },
-  2: { start: '12:00', end: '18:00' },
-  3: { start: '12:00', end: '18:00' },
-  4: { start: '12:00', end: '18:00' },
-  5: { start: '12:00', end: '18:00' },
-  6: { start: '12:00', end: '18:00' },
+  1: WEEKDAY_SCHEDULE,
+  2: WEEKDAY_SCHEDULE,
+  3: WEEKDAY_SCHEDULE,
+  4: WEEKDAY_SCHEDULE,
+  5: { ranges: [{ start: '15:00', end: '17:30', maxEnd: '18:00' }] },
+  6: { ranges: [{ start: '10:30', end: '16:30', maxEnd: '17:00' }] },
 };
 
 const SERVICE_DEFINITIONS = {
@@ -381,7 +389,7 @@ const SERVICE_DEFINITIONS = {
   unas_acrilicas_gelish: {
     label: 'Uñas',
     requiresSelection: true,
-    note: 'Considere que en uñas de tip acrilicas o escultural se necesita elegir el tamaño para calcular la duración total, si el tamaño es mayor a 4 se agregará 1 hora adicional al servicio.',
+    note: 'Considere que en uñas de tip acrilicas o escultural se necesita elegir el tamaño para calcular la duración total, si el tamaño es mayor a 4 se agregará 1 hora adicional a la uña con tip acrílica. La uña escultural dura 4 horas en cualquier tamaño.',
     groups: [
       {
         title: 'Tipo de servicio',
@@ -465,9 +473,9 @@ const SERVICE_DEFINITIONS = {
           {
             key: 'profesionales',
             label: 'Profesionales',
-            duration: 300,
+            duration: 240,
             specs: ['Eventos formales', 'XV años', 'Bodas', 'Graduaciones', 'Sesión de fotos', 'Conferencias'],
-            description: 'Dura 5 horas.',
+            description: 'Dura 4 horas.',
           },
         ],
       },
@@ -477,11 +485,11 @@ const SERVICE_DEFINITIONS = {
   otro: {
     label: 'Otro',
     requiresSelection: true,
-    note: 'Selecciona una opción para calcular la duración.',
+    note: 'Selecciona uno o varios servicios. La duración final se calcula automáticamente.',
     groups: [
       {
         title: 'Tipo de servicio',
-        type: 'radio',
+        type: 'checkbox',
         name: 'otro_tipo_servicio',
         items: [
           {
@@ -528,10 +536,32 @@ function pad(n) {
   return String(n).padStart(2, '0');
 }
 
+function toTime24(value) {
+  const text = String(value || '').trim();
+  const match = text.match(/^(\d{1,2}):(\d{2})(?:\s*([AaPp])\.?[Mm]\.?)?$/);
+  if (!match) {
+    return text;
+  }
+
+  let hours = Number(match[1]);
+  if (match[3]) {
+    const isPm = match[3].toLowerCase() === 'p';
+    hours = (hours % 12) + (isPm ? 12 : 0);
+  }
+
+  return `${pad(hours)}:${match[2]}`;
+}
+
+function formatServiceWithDetail(appointment) {
+  const label = appointment?.servicio || 'Servicio';
+  const detail = appointment?.servicioDetalle || '';
+  return detail && detail !== label ? `${label}: ${detail}` : label;
+}
+
 function formatICSDateForUTCFromLocalParts(fecha, hora) {
-  // fecha: YYYY-MM-DD, hora: HH:MM
+  // fecha: YYYY-MM-DD, hora: HH:MM (también acepta h:mm AM/PM de citas anteriores)
   const [y, m, d] = String(fecha || '').split('-').map(Number);
-  const [hh, mm] = String(hora || '00:00').split(':').map(Number);
+  const [hh, mm] = toTime24(hora || '00:00').split(':').map(Number);
   const local = new Date(y, (m || 1) - 1, d || 1, hh || 0, mm || 0, 0);
   return formatICSDateForUTC(local);
 }
@@ -568,7 +598,7 @@ function generateICS(appointment) {
     dtend = formatICSDateForUTC(endLocal);
   }
 
-  const summary = `${appointment.servicio || 'Cita'} - ${appointment.nombre || ''}`;
+  const summary = `${formatServiceWithDetail(appointment)} - ${appointment.nombre || ''}`;
   const description = `${appointment.notas || ''}\n\n${appointment.servicioDetalle || ''}`;
 
   const ics = [
@@ -1274,7 +1304,13 @@ function toLocalDateString(date) {
   return localTime.toISOString().split('T')[0];
 }
 
+const ADMIN_SCHEDULE = { ranges: [{ start: '08:00', end: '20:00', maxEnd: null }] };
+
 function getScheduleForDate(dateValue) {
+  if (localStorage.getItem('adminLoggedIn') === 'true') {
+    return ADMIN_SCHEDULE;
+  }
+
   const dayIndex = new Date(`${dateValue}T00:00:00`).getDay();
   return WORKING_HOURS[dayIndex] || null;
 }
@@ -1302,7 +1338,7 @@ function getUnasSelectionState() {
     requiresSize,
     sizeValue,
     sizeLabel: sizeValue,
-    sizeExtraDuration: requiresSize ? (sizeNumber >= 4 ? 60 : 0) : 0,
+    sizeExtraDuration: requiresSize && typeValue !== 'escultural' ? (sizeNumber >= 4 ? 60 : 0) : 0,
   };
 }
 
@@ -1384,8 +1420,6 @@ function getAvailableStartTimes(dateValue, durationMinutes, serviceValue) {
     return [];
   }
 
-  const openingMinutes = parseTimeToMinutes(schedule.start);
-  const closingMinutes = parseTimeToMinutes(schedule.end);
   const bookedAppointments = getAppointmentsForDate(dateValue).map((cita) => ({
     start: parseTimeToMinutes(cita.hora),
     end: parseTimeToMinutes(cita.hora) + inferDurationFromCitation(cita),
@@ -1393,14 +1427,25 @@ function getAvailableStartTimes(dateValue, durationMinutes, serviceValue) {
 
   const available = [];
 
-  for (let slotStart = openingMinutes; slotStart <= closingMinutes; slotStart += SLOT_STEP_MINUTES) {
-    const slotEnd = slotStart + durationMinutes;
-    const overlaps = bookedAppointments.some((appointment) => intervalsOverlap(slotStart, slotEnd, appointment.start, appointment.end));
+  schedule.ranges.forEach((range) => {
+    const rangeStart = parseTimeToMinutes(range.start);
+    const rangeEnd = parseTimeToMinutes(range.end);
+    const maxEnd = range.maxEnd ? parseTimeToMinutes(range.maxEnd) : Infinity;
 
-    if (!overlaps) {
-      available.push(minutesToTime(slotStart));
+    for (let slotStart = rangeStart; slotStart <= rangeEnd; slotStart += SLOT_STEP_MINUTES) {
+      const slotEnd = slotStart + durationMinutes;
+      // Diseño de color ocupa todo el día, así que no se limita por la hora de cierre.
+      if (serviceValue !== 'diseno_color' && slotEnd > maxEnd) {
+        continue;
+      }
+
+      const overlaps = bookedAppointments.some((appointment) => intervalsOverlap(slotStart, slotEnd, appointment.start, appointment.end));
+
+      if (!overlaps) {
+        available.push(minutesToTime(slotStart));
+      }
     }
-  }
+  });
 
   return available;
 }
@@ -1968,9 +2013,11 @@ function showInlineMessage(messageDiv, type, title, text) {
 
 function buildBookingEmailParams(appointments = []) {
   const summaryLines = appointments.map((appointment, index) => {
-    const startTime = appointment?.hora ? formatTimeLabel(appointment.hora) : 'Sin hora';
-    const finishTime = appointment?.horaFin || (appointment?.hora ? formatTimeLabel(addMinutes(appointment.hora, appointment.duracionMin || 0)) : 'Sin hora');
-    return `${index + 1}. ${appointment?.servicio || 'Servicio'} — ${appointment?.fecha || 'Sin fecha'} ${startTime} a ${finishTime}`;
+    const startTime = appointment?.hora ? toTime24(appointment.hora) : 'Sin hora';
+    const finishTime = appointment?.horaFin
+      ? toTime24(appointment.horaFin)
+      : (appointment?.hora ? addMinutes(toTime24(appointment.hora), appointment.duracionMin || 0) : 'Sin hora');
+    return `${index + 1}. ${formatServiceWithDetail(appointment)} — ${appointment?.fecha || 'Sin fecha'} ${startTime} a ${finishTime}`;
   });
 
   return {
@@ -2138,7 +2185,7 @@ function initAgendarForm() {
     const cards = multiBookingQueue.map((appointment, index) => `
       <div style="margin-top:8px; padding:12px; border:1px solid #e2d6b0; border-radius:10px; background:#fffaf0;">
         <strong>${index + 1}. ${appointment.servicio}</strong>
-        <div style="font-size:0.95rem; color:#5d4e2e; margin-top:4px;">${appointment.nombre} · ${appointment.fecha} · ${formatTimeLabel(appointment.hora)} a ${appointment.horaFin || formatTimeLabel(addMinutes(appointment.hora, appointment.duracionMin || 0))}</div>
+        <div style="font-size:0.95rem; color:#5d4e2e; margin-top:4px;">${appointment.nombre} · ${appointment.fecha} · ${formatTimeLabel(appointment.hora)} a ${formatTimeLabel(toTime24(appointment.horaFin || addMinutes(appointment.hora, appointment.duracionMin || 0)))}</div>
       </div>
     `).join('');
 
@@ -2378,7 +2425,7 @@ function initAgendarForm() {
       submitBtn.textContent = 'Enviando...';
     }
 
-    const endTime = horaFinInput?.value || '';
+    const endTime = addMinutes(horaValue, appointmentDuration);
     const formData = {
       id: Date.now(),
       nombre,
@@ -2450,11 +2497,11 @@ function initAgendarForm() {
       const emailParams = {
         nombre: formData.nombre,
         telefono: formData.telefono,
-        servicio: formData.servicio,
+        servicio: formatServiceWithDetail(formData),
         servicio_detalle: formData.servicioDetalle,
         fecha: formData.fecha,
-        hora: formData.hora,
-        hora_fin: formData.horaFin,
+        hora: toTime24(formData.hora),
+        hora_fin: toTime24(formData.horaFin),
         duracion: formData.duracionTexto,
         notas: formData.notas,
         to_email: 'queenstudioym@gmail.com',
@@ -2737,9 +2784,6 @@ function renderCitasAgendadas(citas, container) {
 }
 
 function getAvailableSlotsForAdmin(appointments, schedule) {
-  const openingMinutes = parseTimeToMinutes(schedule.start);
-  const closingMinutes = parseTimeToMinutes(schedule.end);
-
   const bookedIntervals = appointments.map((cita) => ({
     start: parseTimeToMinutes(cita.hora),
     end: parseTimeToMinutes(cita.hora) + inferDurationFromCitation(cita),
@@ -2747,23 +2791,28 @@ function getAvailableSlotsForAdmin(appointments, schedule) {
 
   const chips = [];
 
-  for (let slotStart = openingMinutes; slotStart < closingMinutes; slotStart += SLOT_STEP_MINUTES) {
-    const slotEnd = slotStart + SLOT_STEP_MINUTES;
-    const occupiedAppointment = bookedIntervals.find((appointment) => intervalsOverlap(slotStart, slotEnd, appointment.start, appointment.end));
+  schedule.ranges.forEach((range) => {
+    const openingMinutes = parseTimeToMinutes(range.start);
+    const closingMinutes = parseTimeToMinutes(range.end);
 
-    if (occupiedAppointment) {
-      chips.push(`<span class="slot-chip busy">${formatTimeLabel(minutesToTime(slotStart))}</span>`);
-    } else {
-      chips.push(`<span class="slot-chip free">${formatTimeLabel(minutesToTime(slotStart))}</span>`);
+    for (let slotStart = openingMinutes; slotStart <= closingMinutes; slotStart += SLOT_STEP_MINUTES) {
+      const slotEnd = slotStart + SLOT_STEP_MINUTES;
+      const occupiedAppointment = bookedIntervals.find((appointment) => intervalsOverlap(slotStart, slotEnd, appointment.start, appointment.end));
+
+      if (occupiedAppointment) {
+        chips.push(`<span class="slot-chip busy">${formatTimeLabel(minutesToTime(slotStart))}</span>`);
+      } else {
+        chips.push(`<span class="slot-chip free">${formatTimeLabel(minutesToTime(slotStart))}</span>`);
+      }
     }
-  }
+  });
 
   return chips.join('');
 }
 
 function renderAdminAppointmentCard(cita) {
   const estadoMeta = getEstadoMeta(cita.estado || 'en espera');
-  const endValue = cita.horaFin || (cita.hora && cita.duracionMin ? formatTimeLabel(addMinutes(cita.hora, cita.duracionMin)) : '');
+  const endValue = cita.horaFin ? formatTimeLabel(toTime24(cita.horaFin)) : (cita.hora && cita.duracionMin ? formatTimeLabel(addMinutes(cita.hora, cita.duracionMin)) : '');
   const serviceDetail = cita.servicioDetalle && cita.servicioDetalle !== cita.servicio ? cita.servicioDetalle : cita.servicio;
   const sanitizedPhone = String(cita.telefono || '').replace(/\D/g, '');
   const estadoEtiqueta = estadoMeta.etiqueta || String(cita.estado || 'en espera');
@@ -2863,7 +2912,7 @@ window.editarCita = function editarCita(id) {
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
             <label style="display:grid; gap:6px; font-weight:600;">
               Hora fin
-              <input name="horaFin" value="${(cita.horaFin || initialEndTime || '').replace(/"/g, '&quot;')}" style="padding:10px; border:1px solid #d4c6a1; border-radius:8px;" />
+              <input name="horaFin" value="${toTime24(cita.horaFin || initialEndTime || '').replace(/"/g, '&quot;')}" style="padding:10px; border:1px solid #d4c6a1; border-radius:8px;" />
             </label>
             <label style="display:grid; gap:6px; font-weight:600;">
               Duración
@@ -2902,7 +2951,7 @@ window.editarCita = function editarCita(id) {
     const startTime = String(horaInputField?.value || cita.hora || '');
 
     if (horaFinField) {
-      horaFinField.value = startTime ? formatTimeLabel24h(addMinutes(startTime, durationMinutes)) : '';
+      horaFinField.value = startTime ? addMinutes(startTime, durationMinutes) : '';
     }
 
     if (duracionTextoField) {
@@ -2925,7 +2974,7 @@ window.editarCita = function editarCita(id) {
     const selectedServiceDefinition = getServiceDefinition(selectedServiceKey);
     const startTime = String(formData.get('hora') || cita.hora || '').trim();
     const durationMinutes = resolveAppointmentDurationMinutes(selectedServiceKey, { ...cita, duracionMin: Number(cita.duracionMin) || 0 }, []);
-    const endTime = String(formData.get('horaFin') || '').trim() || (startTime ? formatTimeLabel24h(addMinutes(startTime, durationMinutes)) : '');
+    const endTime = String(formData.get('horaFin') || '').trim() || (startTime ? addMinutes(startTime, durationMinutes) : '');
     const updatedCita = {
       ...cita,
       nombre: String(formData.get('nombre') || '').trim(),
